@@ -1,4 +1,4 @@
-- Modo em que o mapa ta cheio de barcos e tem 1 espaço de água, daí vc tem q acertar a água;
+- Modo em que o mapa ta cheio de barcos e tem 1 espaço de água, daí vc tem q acertar a água (talvez);
 - Animações bem top usando emoji pra mostrar a bomba caindo no barco ou na água;
 - Música de fundo e efeitos sonoros de splash ou explosão usando pygame;
-- Modo com aviões ao invés de barcos, então se mexem ao invés de ficarem parados (só se sobrar tempo daí).
+- Modo com aviões ao invés de barcos, então se mexem ao invés de ficarem parados. Feito em pygame.
