@@ -331,7 +331,7 @@ def modo2():
     print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
 
 def modo3():
-    while barco_cpu > 0 and barco_jogador > 0:
+    while barco_cpu > 0:
         # Tabuleiro
         exibir_tabuleiro(vis_cpu, "")
 
