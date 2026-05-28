@@ -153,6 +153,7 @@ def modo1():
 
         if real_cpu[linha][coluna] == 1:
             real_cpu[linha][coluna] = "X"
+            vis_cpu[linha][coluna] = "X"
             barco_cpu -= 1
             print("Parabéns! Você acertou o alvo.")
             if barco_cpu == 0:
