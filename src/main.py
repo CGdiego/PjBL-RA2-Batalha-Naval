@@ -85,8 +85,8 @@ def main():
     print(pyfiglet.figlet_format("Batalha Naval", font="slant")) # Título usando biblioteca "pyfiglet"
 
     modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador (W.I.P.)\n[2] - Simplificado\n[3] - Caça-Água (W.I.P.)\n[4] - Batalha Aérea (W.I.P.)\n")
-    while not modo in ["1", "2", "3"]:
-        modo = input("\nInsira uma opção válida (1, 2 ou 3): ")
+    while not modo in ["1", "2", "3", "4"]:
+        modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ")
     modo = int(modo)
 
     print("\033[H\033[J", end="") 
@@ -331,7 +331,83 @@ def modo2():
     print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
 
 def modo3():
-    pass # Placeholder enquanto não tiver nada
+    while barco_cpu > 0 and barco_jogador > 0:
+        # Tabuleiro
+        exibir_tabuleiro(vis_cpu, "")
+
+        # Jogador Ataca
+        print(f"\n\033[1mEscolha onde atacar.\033[0m")
+        linha = escolher_linha()
+        coluna = escolher_coluna()
+
+        while real_cpu[linha][coluna] in ["O", "X"]:
+            print("\nPosição já atacada! Escolha outra.")
+            linha = escolher_linha()
+            coluna = escolher_coluna()
+        
+        print("\033[H\033[J", end="") 
+
+        if real_cpu[linha][coluna] == 1:
+            real_cpu[linha][coluna] = "X"
+            vis_cpu[linha][coluna] = "X"
+            barco_cpu -= 1
+            print("Parabéns! Você acertou o alvo.")
+            if barco_cpu == 0:
+                break
+        else:
+            real_cpu[linha][coluna] = "O"
+            print("Não foi dessa vez... Mas na próxima vai!")
+
+        vis_cpu[linha][coluna] = real_cpu[linha][coluna]
+
+        input("\nEnter para continuar.")
+
+        print("\033[H\033[J", end="")
+
+        # Tabuleiro do Computador
+        exibir_tabuleiro(vis_cpu, "do Computador")
+        print(f"Embarcações restantes: {barco_cpu}.\n")
+        
+        # Tabuleiro do Jogador
+        exibir_tabuleiro(vis_jogador, "do Jogador")
+        print(f"Embarcações restantes: {barco_jogador}.")
+
+        # Computador Ataca
+        linha = random.randint(0, 9)
+        coluna = random.randint(0, 9)
+
+        while real_jogador[linha][coluna] in ["O", "X"]:
+            linha = random.randint(0, 9)
+            coluna = random.randint(0, 9)
+        
+        print("\033[H\033[J", end="") 
+
+        print(f"O computador escolheu a linha \033[1m{linha+1}\033[0m.")
+        print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
+
+        if real_jogador[linha][coluna] == 1:
+            real_jogador[linha][coluna] = "X"
+            barco_jogador -= 1
+            print("O computador acertou o alvo.")
+        else:
+            real_jogador[linha][coluna] = "O"
+            print("O computador errou o alvo.")
+
+        vis_jogador[linha][coluna] = real_jogador[linha][coluna]
+
+        input("\nEnter para continuar.")
+
+        print("\033[H\033[J", end="")
+    
+    if barco_cpu == 0:
+        print("Parabéns! Você venceu!!!")
+    else:
+        print("O computador venceu...")
+    
+    input("\nEnter para continuar.")
+
+    print("Feito por:")
+    print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
 
 def modo4():
     pass # Placeholder enquanto não tiver nada
