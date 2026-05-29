@@ -1,8 +1,8 @@
-print("\033[H\033[J", end="") 
-
 import pyfiglet
 import random
 import os
+
+os.system('cls')
 
 real_jogador = [
     [0] * 10,
