@@ -2,6 +2,7 @@ print("\033[H\033[J", end="")
 
 import pyfiglet
 import random
+import os
 
 real_jogador = [
     [0] * 10,
@@ -89,7 +90,7 @@ def main():
         modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ")
     modo = int(modo)
 
-    print("\033[H\033[J", end="") 
+    os.system('cls')
 
     if modo == 1:
         modo1()
@@ -100,6 +101,7 @@ def main():
     else:
         modo4()
 
+# Humano x Computador
 def modo1():
     barco_jogador = 5
     barco_cpu = 5
@@ -130,7 +132,7 @@ def modo1():
         
         real_cpu[linha][coluna] = 1
 
-    print("\033[H\033[J", end="") 
+    os.system('cls')
 
     while barco_cpu > 0 and barco_jogador > 0:
         # Tabuleiro do Computador
@@ -151,7 +153,7 @@ def modo1():
             linha = escolher_linha()
             coluna = escolher_coluna()
         
-        print("\033[H\033[J", end="") 
+        os.system('cls')
 
         if real_cpu[linha][coluna] == 1:
             real_cpu[linha][coluna] = "X"
@@ -168,7 +170,7 @@ def modo1():
 
         input("\nEnter para continuar.")
 
-        print("\033[H\033[J", end="")
+        os.system('cls')
 
         # Tabuleiro do Computador
         exibir_tabuleiro(vis_cpu, "do Computador")
@@ -185,10 +187,8 @@ def modo1():
         while real_jogador[linha][coluna] in ["O", "X"]:
             linha = random.randint(0, 9)
             coluna = random.randint(0, 9)
-        
-        print("\033[H\033[J", end="") 
 
-        print(f"O computador escolheu a linha \033[1m{linha+1}\033[0m.")
+        print(f"\nO computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
         if real_jogador[linha][coluna] == 1:
@@ -203,7 +203,7 @@ def modo1():
 
         input("\nEnter para continuar.")
 
-        print("\033[H\033[J", end="")
+        os.system('cls')
     
     if barco_cpu == 0:
         print("Parabéns! Você venceu!!!")
@@ -215,6 +215,7 @@ def modo1():
     print("Feito por:")
     print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
 
+# Simplificado
 def modo2():
     barco_jogador = 5
     barco_cpu = 5
@@ -245,7 +246,7 @@ def modo2():
         
         real_cpu[linha][coluna] = 1
 
-    print("\033[H\033[J", end="") 
+    os.system('cls')
 
     while barco_cpu > 0 and barco_jogador > 0:
         # Tabuleiro do Computador
@@ -266,7 +267,7 @@ def modo2():
             linha = escolher_linha()
             coluna = escolher_coluna()
         
-        print("\033[H\033[J", end="") 
+        os.system('cls')
 
         if real_cpu[linha][coluna] == 1:
             real_cpu[linha][coluna] = "X"
@@ -283,7 +284,7 @@ def modo2():
 
         input("\nEnter para continuar.")
 
-        print("\033[H\033[J", end="")
+        os.system('cls')
 
         # Tabuleiro do Computador
         exibir_tabuleiro(vis_cpu, "do Computador")
@@ -300,10 +301,8 @@ def modo2():
         while real_jogador[linha][coluna] in ["O", "X"]:
             linha = random.randint(0, 9)
             coluna = random.randint(0, 9)
-        
-        print("\033[H\033[J", end="") 
 
-        print(f"O computador escolheu a linha \033[1m{linha+1}\033[0m.")
+        print(f"\nO computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
         if real_jogador[linha][coluna] == 1:
@@ -318,7 +317,7 @@ def modo2():
 
         input("\nEnter para continuar.")
 
-        print("\033[H\033[J", end="")
+        os.system('cls')
     
     if barco_cpu == 0:
         print("Parabéns! Você venceu!!!")
@@ -330,7 +329,15 @@ def modo2():
     print("Feito por:")
     print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
 
+# Caça-Água
 def modo3():
+    barco_cpu = 1
+
+    linha = random.randint(0, 9)
+    coluna = random.randint(0, 9)
+
+    real_cpu[linha][coluna] = 1
+
     while barco_cpu > 0:
         # Tabuleiro
         exibir_tabuleiro(vis_cpu, "")
@@ -345,59 +352,52 @@ def modo3():
             linha = escolher_linha()
             coluna = escolher_coluna()
         
-        print("\033[H\033[J", end="") 
+        os.system('cls')
 
         if real_cpu[linha][coluna] == 1:
-            real_cpu[linha][coluna] = "X"
-            vis_cpu[linha][coluna] = "X"
+            real_cpu[linha][coluna] = "O"
+            vis_cpu[linha][coluna] = "O"
             barco_cpu -= 1
             print("Parabéns! Você acertou o alvo.")
             if barco_cpu == 0:
                 break
         else:
-            real_cpu[linha][coluna] = "O"
+            real_cpu[linha][coluna] = "X"
             print("Não foi dessa vez... Mas na próxima vai!")
 
         vis_cpu[linha][coluna] = real_cpu[linha][coluna]
 
         input("\nEnter para continuar.")
 
-        print("\033[H\033[J", end="")
+        os.system('cls')
 
-        # Tabuleiro do Computador
-        exibir_tabuleiro(vis_cpu, "do Computador")
-        print(f"Embarcações restantes: {barco_cpu}.\n")
-        
-        # Tabuleiro do Jogador
-        exibir_tabuleiro(vis_jogador, "do Jogador")
-        print(f"Embarcações restantes: {barco_jogador}.")
+        # Tabuleiro
+        exibir_tabuleiro(vis_cpu, "")
 
         # Computador Ataca
         linha = random.randint(0, 9)
         coluna = random.randint(0, 9)
 
-        while real_jogador[linha][coluna] in ["O", "X"]:
+        while real_cpu[linha][coluna] in ["O", "X"]:
             linha = random.randint(0, 9)
             coluna = random.randint(0, 9)
-        
-        print("\033[H\033[J", end="") 
 
         print(f"O computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
-        if real_jogador[linha][coluna] == 1:
-            real_jogador[linha][coluna] = "X"
-            barco_jogador -= 1
+        if real_cpu[linha][coluna] == 1:
+            real_cpu[linha][coluna] = "O"
+            barco_cpu -= 1
             print("O computador acertou o alvo.")
         else:
-            real_jogador[linha][coluna] = "O"
+            real_cpu[linha][coluna] = "X"
             print("O computador errou o alvo.")
 
-        vis_jogador[linha][coluna] = real_jogador[linha][coluna]
+        vis_cpu[linha][coluna] = real_cpu[linha][coluna]
 
         input("\nEnter para continuar.")
 
-        print("\033[H\033[J", end="")
+        os.system('cls')
     
     if barco_cpu == 0:
         print("Parabéns! Você venceu!!!")
@@ -409,6 +409,7 @@ def modo3():
     print("Feito por:")
     print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
 
+# Batalha Aérea
 def modo4():
     pass # Placeholder enquanto não tiver nada
 
