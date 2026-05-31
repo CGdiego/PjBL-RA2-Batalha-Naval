@@ -85,7 +85,7 @@ def main():
     print("Bem-vindo à".center(69))
     print(pyfiglet.figlet_format("Batalha Naval", font="slant")) # Título usando biblioteca "pyfiglet"
 
-    modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador (W.I.P.)\n[2] - Simplificado\n[3] - Caça-Água (W.I.P.)\n[4] - Batalha Aérea (W.I.P.)\n")
+    modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador (W.I.P.)\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea (W.I.P.)\n")
     while not modo in ["1", "2", "3", "4"]:
         modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ")
     modo = int(modo)
@@ -161,12 +161,12 @@ def modo1():
             barco_cpu -= 1
             print("Parabéns! Você acertou o alvo.")
             if barco_cpu == 0:
+                input("\nEnter para continuar.")
                 break
         else:
             real_cpu[linha][coluna] = "O"
+            vis_cpu[linha][coluna] = "O"
             print("Não foi dessa vez... Mas na próxima vai!")
-
-        vis_cpu[linha][coluna] = real_cpu[linha][coluna]
 
         input("\nEnter para continuar.")
 
@@ -275,12 +275,12 @@ def modo2():
             barco_cpu -= 1
             print("Parabéns! Você acertou o alvo.")
             if barco_cpu == 0:
+                input("\nEnter para continuar.")
                 break
         else:
             real_cpu[linha][coluna] = "O"
+            vis_cpu[linha][coluna] = "O"
             print("Não foi dessa vez... Mas na próxima vai!")
-
-        vis_cpu[linha][coluna] = real_cpu[linha][coluna]
 
         input("\nEnter para continuar.")
 
@@ -332,6 +332,7 @@ def modo2():
 # Caça-Água
 def modo3():
     barco_cpu = 1
+    vencedor = ""
 
     linha = random.randint(0, 9)
     coluna = random.randint(0, 9)
@@ -358,14 +359,14 @@ def modo3():
             real_cpu[linha][coluna] = "O"
             vis_cpu[linha][coluna] = "O"
             barco_cpu -= 1
+            vencedor = "jogador"
             print("Parabéns! Você acertou o alvo.")
-            if barco_cpu == 0:
-                break
+            input("\nEnter para continuar.")
+            break
         else:
             real_cpu[linha][coluna] = "X"
+            vis_cpu[linha][coluna] = "X"
             print("Não foi dessa vez... Mas na próxima vai!")
-
-        vis_cpu[linha][coluna] = real_cpu[linha][coluna]
 
         input("\nEnter para continuar.")
 
@@ -388,6 +389,7 @@ def modo3():
         if real_cpu[linha][coluna] == 1:
             real_cpu[linha][coluna] = "O"
             barco_cpu -= 1
+            vencedor = "cpu"
             print("O computador acertou o alvo.")
         else:
             real_cpu[linha][coluna] = "X"
@@ -399,10 +401,10 @@ def modo3():
 
         os.system('cls')
     
-    if barco_cpu == 0:
-        print("Parabéns! Você venceu!!!")
+    if vencedor == "jogador":
+        print("Parabéns! Você encontrou a água primeiro!")
     else:
-        print("O computador venceu...")
+        print("O computador encontrou a água primeiro...")
     
     input("\nEnter para continuar.")
 
