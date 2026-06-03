@@ -19,13 +19,17 @@
 
 ---
 
+
+| <img src="https://github.com/MeinersJ.png" width="45px;" style="border-radius:50px;"/> | **João Victor Meiners Barbosa** 
+| <img src="https://github.com/LucasMaximiano.png" width="45px;" style="border-radius:50px;"/> | **Lucas Maximiano** 
+
 ## 👥 Autores
 
 | Nome | GitHub |
 | :--- | :--- |
-| **Diego Soares** | [@DiegoSoares](#) |
-| **João Victor Meiners Barbosa** | [@MeinersJ](#) |
-| **Lucas Maximiano** | [@LucasMaximiano](#) |
+| **Diego Soares** | [@DiegoSoares](https://github.com/DiegoSoares) |
+| **João Victor Meiners Barbosa** | [@MeinersJ](https://github.com/MeinersJ) |
+| **Lucas Maximiano** | [@LucasMaximiano](#) | [@LucasMaximiano](https://github.com/LucasMaximiano) |
 
 ---
 
