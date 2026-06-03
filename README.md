@@ -21,11 +21,11 @@
 
 ## 👥 Autores
 
-| Foto | Nome | GitHub |
-| :---: | :--- | :--- |
-|| **Diego Soares** | [@DiegoSoares](#) |
-|| **João Victor Meiners Barbosa** | [@MeinersJ](#) |
-|| **Lucas Maximiano** | [@LucasMaximiano](#) |
+| Nome | GitHub |
+| :--- | :--- |
+| **Diego Soares** | [@DiegoSoares](#) |
+| **João Victor Meiners Barbosa** | [@MeinersJ](#) |
+| **Lucas Maximiano** | [@LucasMaximiano](#) |
 
 ---
 
