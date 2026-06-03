@@ -19,10 +19,6 @@
 
 ---
 
-
-| <img src="https://github.com/MeinersJ.png" width="45px;" style="border-radius:50px;"/> | **João Victor Meiners Barbosa** 
-| <img src="https://github.com/LucasMaximiano.png" width="45px;" style="border-radius:50px;"/> | **Lucas Maximiano** 
-
 ## 👥 Autores
 
 | Nome | GitHub |
