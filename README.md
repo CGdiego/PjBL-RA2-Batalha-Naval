@@ -23,9 +23,9 @@
 
 | Foto | Nome | GitHub |
 | :---: | :--- | :--- |
-| <img src="https://github.com/DiegoSoares.png" width="45px;" style="border-radius:50px;"/> | **Diego Soares** | [@DiegoSoares](#) |
-| <img src="https://github.com/MeinersJ.png" width="45px;" style="border-radius:50px;"/> | **João Victor Meiners Barbosa** | [@MeinersJ](#) |
-| <img src="https://github.com/LucasMaximiano.png" width="45px;" style="border-radius:50px;"/> | **Lucas Maximiano** | [@LucasMaximiano](#) |
+|| **Diego Soares** | [@DiegoSoares](#) |
+|| **João Victor Meiners Barbosa** | [@MeinersJ](#) |
+|| **Lucas Maximiano** | [@LucasMaximiano](#) |
 
 ---
 
