@@ -24,7 +24,7 @@
 | Nome | GitHub |
 | :--- | :--- |
 | **Diego Soares** | [@CGdiego](https://github.com/CGdiego) |
-| **João Victor Meiners Barbosa** | [JoaoVictorMB2008](https://github.com/JoaoVictorMB2008) |
+| **João Victor Meiners Barboza** | [@JoaoVictorMB2008](https://github.com/JoaoVictorMB2008) |
 | **Lucas Maximiano Rodrigues** | [@LucasMax-Rodrigues](https://github.com/LucasMax-Rodrigues) |
 
 ---
