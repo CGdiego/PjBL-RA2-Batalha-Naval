@@ -23,9 +23,9 @@
 
 | Nome | GitHub |
 | :--- | :--- |
-| **Diego Soares** | [@DiegoSoares](https://github.com/DiegoSoares) |
-| **João Victor Meiners Barbosa** | [@MeinersJ](https://github.com/MeinersJ) |
-| **Lucas Maximiano** | [@LucasMaximiano](#) | [@LucasMaximiano](https://github.com/LucasMaximiano) |
+| **Diego Soares** | [@CGdiego](https://github.com/CGdiego) |
+| **João Victor Meiners Barbosa** | [JoaoVictorMB2008](https://github.com/JoaoVictorMB2008) |
+| **Lucas Maximiano Rodrigues** | [@LucasMaximiano](#) | [@LucasMax-Rodrigues](https://github.com/LucasMax-Rodrigues) |
 
 ---
 
