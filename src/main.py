@@ -9,11 +9,14 @@ os.system('cls')
 pygame.init()
 pygame.mixer.init()
 
-pygame.mixer.music.load("sounds/background.mp3")
-pygame.mixer.music.play(-1)
-
-som_explosao = pygame.mixer.Sound("sounds/explosao.wav")
-som_splash = pygame.mixer.Sound("sounds/splash.wav")
+try:
+    pygame.mixer.music.load("sounds/background.mp3")
+    pygame.mixer.music.play(-1)
+    som_explosao = pygame.mixer.Sound("sounds/explosao.wav")
+    som_splash   = pygame.mixer.Sound("sounds/splash.wav")
+except:
+    som_explosao = None
+    som_splash   = None
 
 real_jogador = [
     [0] * 10,
@@ -80,7 +83,8 @@ def animacao_explosao(modo):
     print("\n\n\n\n         💣")
     time.sleep(0.15)
 
-    som_explosao.play()
+    if som_explosao:
+        som_explosao.play()
 
     os.system('cls')
     print("\n\n\n\n          ✸\n         💥\n          ✸")
@@ -120,7 +124,8 @@ def animacao_splash(modo):
     print("\n\n\n\n         💣")
     time.sleep(0.15)
 
-    som_splash.play()
+    if som_splash:
+        som_splash.play()
 
     os.system('cls')
     print("\n\n\n\n          💧\n        🌊💧🌊")
@@ -276,7 +281,7 @@ def modo1():
         print(f"\nO computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
-        time.sleep(1)
+        time.sleep(3)
 
         if real_jogador[linha][coluna] == 1:
             animacao_explosao(1)
@@ -396,7 +401,7 @@ def modo2():
         print(f"\nO computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
-        time.sleep(1)
+        time.sleep(3)
 
         if real_jogador[linha][coluna] == 1:
             animacao_explosao(2)
@@ -483,7 +488,7 @@ def modo3():
         print(f"O computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
-        time.sleep(1)
+        time.sleep(3)
 
         if real_cpu[linha][coluna] == 1:
             animacao_splash(3)
