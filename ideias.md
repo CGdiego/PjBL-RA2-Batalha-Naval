@@ -1,6 +1,4 @@
-- Modo em que o mapa ta cheio de barcos e tem 1 espaço de água, daí vc tem q acertar a água (talvez);
-- Animações bem top usando emoji pra mostrar a bomba caindo no barco ou na água;
-- Música de fundo e efeitos sonoros de splash ou explosão usando pygame;
 - Modo com aviões ao invés de barcos, então se mexem ao invés de ficarem parados. Feito em pygame;
-- Trocar X por emoji de explosão e O por emoji de água;
-- Mais títulos legais com o pyfiglet.
+- Trocar X por emoji de explosão, O por emoji de água, e 0 por emoji de quadrado preto;
+- Fazer o modo desafio com os 5 tipos diferentes de barcos;
+- Atualizar o readme.

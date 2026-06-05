@@ -1,8 +1,19 @@
 import pyfiglet
+import pygame
 import random
+import time
 import os
 
 os.system('cls')
+
+pygame.init()
+pygame.mixer.init()
+
+pygame.mixer.music.load("sounds/background.mp3")
+pygame.mixer.music.play(-1)
+
+som_explosao = pygame.mixer.Sound("sounds/explosao.wav")
+som_splash = pygame.mixer.Sound("sounds/splash.wav")
 
 real_jogador = [
     [0] * 10,
@@ -55,6 +66,78 @@ vis_cpu = [
     [0] * 10,
     [0] * 10
 ]
+
+def animacao_explosao(modo):
+    os.system('cls')
+    print("\n\n         💣")
+    time.sleep(0.15)
+
+    os.system('cls')
+    print("\n\n\n         💣")
+    time.sleep(0.15)
+
+    os.system('cls')
+    print("\n\n\n\n         💣")
+    time.sleep(0.15)
+
+    som_explosao.play()
+
+    os.system('cls')
+    print("\n\n\n\n          ✸\n         💥\n          ✸")
+    time.sleep(0.1)
+
+    os.system('cls')
+    print("\n\n\n\n        💥💥\n       💥💥💥\n        💥💥")
+    time.sleep(0.2)
+
+    os.system('cls')
+    print("\n\n\n      💥   💥\n     💥💥💥💥💥\n  💥💥💥💥💥💥💥💥\n     💥💥💥💥💥\n      💥   💥")
+    time.sleep(0.35)
+
+    os.system('cls')
+    print("\n\n\n   💥         💥\n     💥💥💥💥💥\n 💥💥💥💥💥💥💥💥💥\n     💥💥💥💥💥\n   💥         💥")
+    time.sleep(0.4)
+
+    if modo == 3:
+        os.system('cls')
+        print("\n\n\n" + "╔════════════╗".center(20) + "\n" + "║   ERROU!   ║".center(20) + "\n" + "╚════════════╝".center(20))
+        time.sleep(0.9)
+    else:
+        os.system('cls')
+        print("\n\n\n\n" + "╔════════════╗".center(20) + "\n" + "║  ACERTOU!  ║".center(20) + "\n" + "╚════════════╝".center(20))
+        time.sleep(0.9)
+
+def animacao_splash(modo):
+    os.system('cls')
+    print("\n\n         💣")
+    time.sleep(0.15)
+
+    os.system('cls')
+    print("\n\n\n         💣")
+    time.sleep(0.15)
+
+    os.system('cls')
+    print("\n\n\n\n         💣")
+    time.sleep(0.15)
+
+    som_splash.play()
+
+    os.system('cls')
+    print("\n\n\n\n          💧\n        🌊💧🌊")
+    time.sleep(0.25)
+
+    os.system('cls')
+    print("\n\n\n        💧    💧\n      💧🌊🌊🌊🌊💧\n     🌊🌊🌊🌊🌊🌊🌊")
+    time.sleep(0.4)
+
+    if modo == 3:
+        os.system('cls')
+        print("\n\n\n\n" + "╔════════════╗".center(25) + "\n" + "║  ACERTOU!  ║".center(25) + "\n" + "╚════════════╝".center(25))
+        time.sleep(0.9)
+    else:
+        os.system('cls')
+        print("\n\n\n" + "╔════════════╗".center(25) + "\n" + "║   ERROU!   ║".center(25) + "\n" + "╚════════════╝".center(25))
+        time.sleep(0.9)
 
 def escolher_linha():
     linha = input("Linha (1-10): ")
@@ -156,6 +239,7 @@ def modo1():
         os.system('cls')
 
         if real_cpu[linha][coluna] == 1:
+            animacao_explosao(1)
             real_cpu[linha][coluna] = "X"
             vis_cpu[linha][coluna] = "X"
             barco_cpu -= 1
@@ -164,6 +248,7 @@ def modo1():
                 input("\nEnter para continuar.")
                 break
         else:
+            animacao_splash(1)
             real_cpu[linha][coluna] = "O"
             vis_cpu[linha][coluna] = "O"
             print("Não foi dessa vez... Mas na próxima vai!")
@@ -191,11 +276,15 @@ def modo1():
         print(f"\nO computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
+        time.sleep(1)
+
         if real_jogador[linha][coluna] == 1:
+            animacao_explosao(1)
             real_jogador[linha][coluna] = "X"
             barco_jogador -= 1
             print("O computador acertou o alvo.")
         else:
+            animacao_splash(1)
             real_jogador[linha][coluna] = "O"
             print("O computador errou o alvo.")
 
@@ -270,6 +359,7 @@ def modo2():
         os.system('cls')
 
         if real_cpu[linha][coluna] == 1:
+            animacao_explosao(2)
             real_cpu[linha][coluna] = "X"
             vis_cpu[linha][coluna] = "X"
             barco_cpu -= 1
@@ -278,6 +368,7 @@ def modo2():
                 input("\nEnter para continuar.")
                 break
         else:
+            animacao_splash(2)
             real_cpu[linha][coluna] = "O"
             vis_cpu[linha][coluna] = "O"
             print("Não foi dessa vez... Mas na próxima vai!")
@@ -305,11 +396,15 @@ def modo2():
         print(f"\nO computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
+        time.sleep(1)
+
         if real_jogador[linha][coluna] == 1:
+            animacao_explosao(2)
             real_jogador[linha][coluna] = "X"
             barco_jogador -= 1
             print("O computador acertou o alvo.")
         else:
+            animacao_splash(2)
             real_jogador[linha][coluna] = "O"
             print("O computador errou o alvo.")
 
@@ -356,6 +451,7 @@ def modo3():
         os.system('cls')
 
         if real_cpu[linha][coluna] == 1:
+            animacao_splash(3)
             real_cpu[linha][coluna] = "O"
             vis_cpu[linha][coluna] = "O"
             barco_cpu -= 1
@@ -364,6 +460,7 @@ def modo3():
             input("\nEnter para continuar.")
             break
         else:
+            animacao_explosao(3)
             real_cpu[linha][coluna] = "X"
             vis_cpu[linha][coluna] = "X"
             print("Não foi dessa vez... Mas na próxima vai!")
@@ -386,12 +483,16 @@ def modo3():
         print(f"O computador escolheu a linha \033[1m{linha+1}\033[0m.")
         print(f"O computador escolheu a coluna \033[1m{chr(coluna+65)}\033[0m.")
 
+        time.sleep(1)
+
         if real_cpu[linha][coluna] == 1:
+            animacao_splash(3)
             real_cpu[linha][coluna] = "O"
             barco_cpu -= 1
             vencedor = "cpu"
             print("O computador acertou o alvo.")
         else:
+            animacao_explosao(3)
             real_cpu[linha][coluna] = "X"
             print("O computador errou o alvo.")
 
