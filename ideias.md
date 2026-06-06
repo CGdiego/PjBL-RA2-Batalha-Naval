@@ -1,4 +1,3 @@
 - Modo com aviões ao invés de barcos, então se mexem ao invés de ficarem parados. Feito em pygame;
-- Trocar X por emoji de explosão, O por emoji de água, e 0 por emoji de quadrado preto;
 - Fazer o modo desafio com os 5 tipos diferentes de barcos;
 - Atualizar o readme.

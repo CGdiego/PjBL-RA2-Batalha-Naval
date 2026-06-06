@@ -19,55 +19,55 @@ except:
     som_splash   = None
 
 real_jogador = [
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10
 ]
 
 vis_jogador = [
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10
 ]
 
 real_cpu = [
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10
 ]
 
 vis_cpu = [
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10,
-    [0] * 10
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10,
+    ['⬛'] * 10
 ]
 
 def animacao_explosao(modo):
@@ -158,16 +158,17 @@ def escolher_coluna():
 
 def exibir_tabuleiro(tabuleiro, nome):
     print(f"\033[1mTabuleiro {nome}\033[0m")
-    print(" " * 8, end="")
+    print(" " * 7, end="")
     for i in range(65, 75):
-        print(f"{chr(i)} ", end=" ")
+        print(f"{chr(i)}  ", end="")
     print()
     for i in range(len(tabuleiro)):
         if i < 9:
-            print(f"| {i+1} |  {tabuleiro[i]}")
+            print(f"| {i+1} |  ", end="")
         else:
-            print(f"| {i+1} | {tabuleiro[i]}")
-    print("-" * 38)
+            print(f"| {i+1} | ", end="")
+        print(" ".join(tabuleiro[i]))
+    print("─" * 37)
 
 def main():
     print("Bem-vindo à".center(69))
@@ -194,31 +195,33 @@ def modo1():
     barco_jogador = 5
     barco_cpu = 5
 
-    exibir_tabuleiro(real_jogador, "do Jogador")
-
     # Jogador
     for i in range(5):
+        exibir_tabuleiro(real_jogador, "do Jogador")
         print(f"\n\033[1mPosicione o {i+1}º navio.\033[0m")
         linha = escolher_linha()
         coluna = escolher_coluna()
 
-        while real_jogador[linha][coluna] == 1:
+        while real_jogador[linha][coluna] == "🚢":
+            os.system('cls')
             print("\nPosição já ocupada! Escolha outra.")
             linha = escolher_linha()
             coluna = escolher_coluna()
         
-        real_jogador[linha][coluna] = 1
+        real_jogador[linha][coluna] = "🚢"
+        
+        os.system('cls')
     
     # Computador
     for i in range(5):
         linha = random.randint(0, 9)
         coluna = random.randint(0, 9)
 
-        while real_cpu[linha][coluna] == 1:
+        while real_cpu[linha][coluna] == "🚢":
             linha = random.randint(0, 9)
             coluna = random.randint(0, 9)
         
-        real_cpu[linha][coluna] = 1
+        real_cpu[linha][coluna] = "🚢"
 
     os.system('cls')
 
@@ -236,26 +239,26 @@ def modo1():
         linha = escolher_linha()
         coluna = escolher_coluna()
 
-        while real_cpu[linha][coluna] in ["O", "X"]:
+        while real_cpu[linha][coluna] in ["💧", "💥"]:
             print("\nPosição já atacada! Escolha outra.")
             linha = escolher_linha()
             coluna = escolher_coluna()
         
         os.system('cls')
 
-        if real_cpu[linha][coluna] == 1:
-            animacao_explosao(1)
-            real_cpu[linha][coluna] = "X"
-            vis_cpu[linha][coluna] = "X"
+        if real_cpu[linha][coluna] == "🚢":
+            animacao_explosao(2)
+            real_cpu[linha][coluna] = "💥"
+            vis_cpu[linha][coluna] = "💥"
             barco_cpu -= 1
             print("Parabéns! Você acertou o alvo.")
             if barco_cpu == 0:
                 input("\nEnter para continuar.")
                 break
         else:
-            animacao_splash(1)
-            real_cpu[linha][coluna] = "O"
-            vis_cpu[linha][coluna] = "O"
+            animacao_splash(2)
+            real_cpu[linha][coluna] = "💧"
+            vis_cpu[linha][coluna] = "💧"
             print("Não foi dessa vez... Mas na próxima vai!")
 
         input("\nEnter para continuar.")
@@ -274,7 +277,7 @@ def modo1():
         linha = random.randint(0, 9)
         coluna = random.randint(0, 9)
 
-        while real_jogador[linha][coluna] in ["O", "X"]:
+        while real_jogador[linha][coluna] in ["💧", "💥"]:
             linha = random.randint(0, 9)
             coluna = random.randint(0, 9)
 
@@ -283,14 +286,14 @@ def modo1():
 
         time.sleep(3)
 
-        if real_jogador[linha][coluna] == 1:
-            animacao_explosao(1)
-            real_jogador[linha][coluna] = "X"
+        if real_jogador[linha][coluna] == "🚢":
+            animacao_explosao(2)
+            real_jogador[linha][coluna] = "💥"
             barco_jogador -= 1
             print("O computador acertou o alvo.")
         else:
-            animacao_splash(1)
-            real_jogador[linha][coluna] = "O"
+            animacao_splash(2)
+            real_jogador[linha][coluna] = "💧"
             print("O computador errou o alvo.")
 
         vis_jogador[linha][coluna] = real_jogador[linha][coluna]
@@ -314,31 +317,33 @@ def modo2():
     barco_jogador = 5
     barco_cpu = 5
 
-    exibir_tabuleiro(real_jogador, "do Jogador")
-
     # Jogador
     for i in range(5):
+        exibir_tabuleiro(real_jogador, "do Jogador")
         print(f"\n\033[1mPosicione o {i+1}º navio.\033[0m")
         linha = escolher_linha()
         coluna = escolher_coluna()
 
-        while real_jogador[linha][coluna] == 1:
+        while real_jogador[linha][coluna] == "🚢":
+            os.system('cls')
             print("\nPosição já ocupada! Escolha outra.")
             linha = escolher_linha()
             coluna = escolher_coluna()
         
-        real_jogador[linha][coluna] = 1
+        real_jogador[linha][coluna] = "🚢"
+        
+        os.system('cls')
     
     # Computador
     for i in range(5):
         linha = random.randint(0, 9)
         coluna = random.randint(0, 9)
 
-        while real_cpu[linha][coluna] == 1:
+        while real_cpu[linha][coluna] == "🚢":
             linha = random.randint(0, 9)
             coluna = random.randint(0, 9)
         
-        real_cpu[linha][coluna] = 1
+        real_cpu[linha][coluna] = "🚢"
 
     os.system('cls')
 
@@ -356,17 +361,17 @@ def modo2():
         linha = escolher_linha()
         coluna = escolher_coluna()
 
-        while real_cpu[linha][coluna] in ["O", "X"]:
+        while real_cpu[linha][coluna] in ["💧", "💥"]:
             print("\nPosição já atacada! Escolha outra.")
             linha = escolher_linha()
             coluna = escolher_coluna()
         
         os.system('cls')
 
-        if real_cpu[linha][coluna] == 1:
+        if real_cpu[linha][coluna] == "🚢":
             animacao_explosao(2)
-            real_cpu[linha][coluna] = "X"
-            vis_cpu[linha][coluna] = "X"
+            real_cpu[linha][coluna] = "💥"
+            vis_cpu[linha][coluna] = "💥"
             barco_cpu -= 1
             print("Parabéns! Você acertou o alvo.")
             if barco_cpu == 0:
@@ -374,8 +379,8 @@ def modo2():
                 break
         else:
             animacao_splash(2)
-            real_cpu[linha][coluna] = "O"
-            vis_cpu[linha][coluna] = "O"
+            real_cpu[linha][coluna] = "💧"
+            vis_cpu[linha][coluna] = "💧"
             print("Não foi dessa vez... Mas na próxima vai!")
 
         input("\nEnter para continuar.")
@@ -394,7 +399,7 @@ def modo2():
         linha = random.randint(0, 9)
         coluna = random.randint(0, 9)
 
-        while real_jogador[linha][coluna] in ["O", "X"]:
+        while real_jogador[linha][coluna] in ["💧", "💥"]:
             linha = random.randint(0, 9)
             coluna = random.randint(0, 9)
 
@@ -403,14 +408,14 @@ def modo2():
 
         time.sleep(3)
 
-        if real_jogador[linha][coluna] == 1:
+        if real_jogador[linha][coluna] == "🚢":
             animacao_explosao(2)
-            real_jogador[linha][coluna] = "X"
+            real_jogador[linha][coluna] = "💥"
             barco_jogador -= 1
             print("O computador acertou o alvo.")
         else:
             animacao_splash(2)
-            real_jogador[linha][coluna] = "O"
+            real_jogador[linha][coluna] = "💧"
             print("O computador errou o alvo.")
 
         vis_jogador[linha][coluna] = real_jogador[linha][coluna]
@@ -437,7 +442,7 @@ def modo3():
     linha = random.randint(0, 9)
     coluna = random.randint(0, 9)
 
-    real_cpu[linha][coluna] = 1
+    real_cpu[linha][coluna] = "🚢"
 
     while barco_cpu > 0:
         # Tabuleiro
@@ -448,17 +453,17 @@ def modo3():
         linha = escolher_linha()
         coluna = escolher_coluna()
 
-        while real_cpu[linha][coluna] in ["O", "X"]:
+        while real_cpu[linha][coluna] in ["💧", "💥"]:
             print("\nPosição já atacada! Escolha outra.")
             linha = escolher_linha()
             coluna = escolher_coluna()
         
         os.system('cls')
 
-        if real_cpu[linha][coluna] == 1:
+        if real_cpu[linha][coluna] == "🚢":
             animacao_splash(3)
-            real_cpu[linha][coluna] = "O"
-            vis_cpu[linha][coluna] = "O"
+            real_cpu[linha][coluna] = "💧"
+            vis_cpu[linha][coluna] = "💧"
             barco_cpu -= 1
             vencedor = "jogador"
             print("Parabéns! Você acertou o alvo.")
@@ -466,8 +471,8 @@ def modo3():
             break
         else:
             animacao_explosao(3)
-            real_cpu[linha][coluna] = "X"
-            vis_cpu[linha][coluna] = "X"
+            real_cpu[linha][coluna] = "💥"
+            vis_cpu[linha][coluna] = "💥"
             print("Não foi dessa vez... Mas na próxima vai!")
 
         input("\nEnter para continuar.")
@@ -481,7 +486,7 @@ def modo3():
         linha = random.randint(0, 9)
         coluna = random.randint(0, 9)
 
-        while real_cpu[linha][coluna] in ["O", "X"]:
+        while real_cpu[linha][coluna] in ["💧", "💥"]:
             linha = random.randint(0, 9)
             coluna = random.randint(0, 9)
 
@@ -490,15 +495,15 @@ def modo3():
 
         time.sleep(3)
 
-        if real_cpu[linha][coluna] == 1:
+        if real_cpu[linha][coluna] == "🚢":
             animacao_splash(3)
-            real_cpu[linha][coluna] = "O"
+            real_cpu[linha][coluna] = "💧"
             barco_cpu -= 1
             vencedor = "cpu"
             print("O computador acertou o alvo.")
         else:
             animacao_explosao(3)
-            real_cpu[linha][coluna] = "X"
+            real_cpu[linha][coluna] = "💥"
             print("O computador errou o alvo.")
 
         vis_cpu[linha][coluna] = real_cpu[linha][coluna]
