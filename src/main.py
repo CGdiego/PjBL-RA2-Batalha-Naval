@@ -70,6 +70,28 @@ vis_cpu = [
     ['⬛'] * 10
 ]
 
+def tabuleiro_demo():
+    demo = [
+        ['⬛','⬛','💧','⬛','⬛','⬛','💥','💧','⬛','⬛'],
+        ['⬛','🚢','🚢','⬛','💧','⬛','💥','⬛','⬛','⬛'],
+        ['⬛','⬛','⬛','⬛','⬛','⬛','🚢','⬛','💧','⬛'],
+        ['💧','⬛','🚢','🚢','🚢','🚢','⬛','⬛','⬛','⬛'],
+        ['⬛','⬛','💧','⬛','⬛','⬛','⬛','⬛','⬛','⬛'],
+        ['⬛','⬛','⬛','⬛','💧','⬛','⬛','⬛','⬛','💥'],
+        ['⬛','💧','⬛','⬛','⬛','⬛','⬛','💧','⬛','🚢'],
+        ['⬛','⬛','⬛','💧','⬛','⬛','⬛','⬛','⬛','🚢'],
+        ['⬛','⬛','⬛','⬛','⬛','💥','⬛','⬛','⬛','🚢'],
+        ['💧','⬛','⬛','⬛','⬛','⬛','⬛','💧','⬛','🚢']
+    ]
+
+    exibir_tabuleiro(demo, "Demo")
+    print(f"Embarcações restantes: 4.\n")
+    print("Exemplo de partida em andamento:")
+    print("🚢 = Navio")
+    print("💥 = Explosão")
+    print("💧 = Água")
+    input("\nPressione Enter para voltar...")
+
 def animacao_explosao(modo):
     os.system('cls')
     print("\n\n         💣")
@@ -171,24 +193,39 @@ def exibir_tabuleiro(tabuleiro, nome):
     print("─" * 37)
 
 def main():
-    print("Bem-vindo à".center(69))
-    print(pyfiglet.figlet_format("Batalha Naval", font="slant")) # Título usando biblioteca "pyfiglet"
+    while True:
+        print("Bem-vindo à".center(69))
+        print(pyfiglet.figlet_format("Batalha Naval", font="slant")) # Título usando biblioteca "pyfiglet"
 
-    modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador (W.I.P.)\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea (W.I.P.)\n")
-    while not modo in ["1", "2", "3", "4"]:
-        modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ")
-    modo = int(modo)
+        modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador (W.I.P.)\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea (W.I.P.)\n")
+        while not modo in ["1", "2", "3", "4", "anim", "tab"]:
+            modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ")
+        if modo in ["1", "2", "3", "4"]:
+            modo = int(modo)
 
-    os.system('cls')
+        os.system('cls')
 
-    if modo == 1:
-        modo1()
-    elif modo == 2:
-        modo2()
-    elif modo == 3:
-        modo3()
-    else:
-        modo4()
+        if modo == 1:
+            modo1()
+            break
+        elif modo == 2:
+            modo2()
+            break
+        elif modo == 3:
+            modo3()
+            break
+        elif modo == 4:
+            modo4()
+            break
+        elif modo == "anim":
+            animacao_splash(1)
+            animacao_explosao(1)
+            os.system('cls')
+            continue
+        else:
+            tabuleiro_demo()
+            os.system('cls')
+            continue
 
 # Humano x Computador
 def modo1():
@@ -209,6 +246,7 @@ def modo1():
             coluna = escolher_coluna()
         
         real_jogador[linha][coluna] = "🚢"
+        vis_jogador[linha][coluna] = "🚢"
         
         os.system('cls')
     
@@ -331,6 +369,7 @@ def modo2():
             coluna = escolher_coluna()
         
         real_jogador[linha][coluna] = "🚢"
+        vis_jogador[linha][coluna] = "🚢"
         
         os.system('cls')
     
