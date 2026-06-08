@@ -10,8 +10,15 @@ pygame.init()
 pygame.mixer.init()
 
 try:
-    pygame.mixer.music.load("sounds/background.mp3")
-    pygame.mixer.music.play(-1)
+    musicas = ["sounds/background.mp3", "sounds/background2.mp3"]
+
+    MUSICA_ACABOU = pygame.USEREVENT + 1
+    pygame.mixer.music.set_endevent(MUSICA_ACABOU)
+
+    musica = random.choice(musicas)
+    pygame.mixer.music.load(musica)
+    pygame.mixer.music.play()
+    
     som_explosao = pygame.mixer.Sound("sounds/explosao.wav")
     som_splash   = pygame.mixer.Sound("sounds/splash.wav")
 except:
@@ -192,29 +199,30 @@ def exibir_tabuleiro(tabuleiro, nome):
         print(" ".join(tabuleiro[i]))
     print("─" * 37)
 
+hack = 0
+
 def main():
+    global hack
     while True:
         print("Bem-vindo à".center(69))
         print(pyfiglet.figlet_format("Batalha Naval", font="slant")) # Título usando biblioteca "pyfiglet"
 
-        modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador (W.I.P.)\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea (W.I.P.)\n")
-        while not modo in ["1", "2", "3", "4", "anim", "tab"]:
-            modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ")
-        if modo in ["1", "2", "3", "4"]:
-            modo = int(modo)
+        modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador (W.I.P.)\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea (W.I.P.)\n").replace(" ", "")
+        while not modo in ["1", "2", "3", "4", "anim", "tab", "hack"]:
+            modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ").replace(" ", "")
 
         os.system('cls')
 
-        if modo == 1:
+        if modo == "1":
             modo1()
             break
-        elif modo == 2:
+        elif modo == "2":
             modo2()
             break
-        elif modo == 3:
+        elif modo == "3":
             modo3()
             break
-        elif modo == 4:
+        elif modo == "4":
             modo4()
             break
         elif modo == "anim":
@@ -222,13 +230,25 @@ def main():
             animacao_explosao(1)
             os.system('cls')
             continue
-        else:
+        elif modo == "tab":
             tabuleiro_demo()
+            os.system('cls')
+            continue
+        else:
+            os.system('cls')
+            if hack == 0:
+                print("O hack foi ativado.\nAguarde 3 segundos...")
+                hack = 1
+            else:
+                print("O hack foi desativado.\nAguarde 3 segundos...")
+                hack = 0
+            time.sleep(3)
             os.system('cls')
             continue
 
 # Humano x Computador
 def modo1():
+    global hack
     barco_jogador = 5
     barco_cpu = 5
 
@@ -265,7 +285,10 @@ def modo1():
 
     while barco_cpu > 0 and barco_jogador > 0:
         # Tabuleiro do Computador
-        exibir_tabuleiro(vis_cpu, "do Computador")
+        if hack == 0:
+            exibir_tabuleiro(vis_cpu, "do Computador")
+        else:
+            exibir_tabuleiro(real_cpu, "do Computador")
         print(f"Embarcações restantes: {barco_cpu}.\n")
         
         # Tabuleiro do Jogador
@@ -292,6 +315,7 @@ def modo1():
             print("Parabéns! Você acertou o alvo.")
             if barco_cpu == 0:
                 input("\nEnter para continuar.")
+                os.system('cls')
                 break
         else:
             animacao_splash(2)
@@ -304,7 +328,10 @@ def modo1():
         os.system('cls')
 
         # Tabuleiro do Computador
-        exibir_tabuleiro(vis_cpu, "do Computador")
+        if hack == 0:
+            exibir_tabuleiro(vis_cpu, "do Computador")
+        else:
+            exibir_tabuleiro(real_cpu, "do Computador")
         print(f"Embarcações restantes: {barco_cpu}.\n")
         
         # Tabuleiro do Jogador
@@ -346,12 +373,15 @@ def modo1():
         print("O computador venceu...")
     
     input("\nEnter para continuar.")
+
+    os.system('cls')
 
     print("Feito por:")
     print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
 
 # Simplificado
 def modo2():
+    global hack
     barco_jogador = 5
     barco_cpu = 5
 
@@ -388,7 +418,10 @@ def modo2():
 
     while barco_cpu > 0 and barco_jogador > 0:
         # Tabuleiro do Computador
-        exibir_tabuleiro(vis_cpu, "do Computador")
+        if hack == 0:
+            exibir_tabuleiro(vis_cpu, "do Computador")
+        else:
+            exibir_tabuleiro(real_cpu, "do Computador")
         print(f"Embarcações restantes: {barco_cpu}.\n")
         
         # Tabuleiro do Jogador
@@ -415,6 +448,7 @@ def modo2():
             print("Parabéns! Você acertou o alvo.")
             if barco_cpu == 0:
                 input("\nEnter para continuar.")
+                os.system('cls')
                 break
         else:
             animacao_splash(2)
@@ -427,7 +461,10 @@ def modo2():
         os.system('cls')
 
         # Tabuleiro do Computador
-        exibir_tabuleiro(vis_cpu, "do Computador")
+        if hack == 0:
+            exibir_tabuleiro(vis_cpu, "do Computador")
+        else:
+            exibir_tabuleiro(real_cpu, "do Computador")
         print(f"Embarcações restantes: {barco_cpu}.\n")
         
         # Tabuleiro do Jogador
@@ -470,11 +507,14 @@ def modo2():
     
     input("\nEnter para continuar.")
 
+    os.system('cls')
+
     print("Feito por:")
     print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
 
 # Caça-Água
 def modo3():
+    global hack
     barco_cpu = 1
     vencedor = ""
 
@@ -485,7 +525,10 @@ def modo3():
 
     while barco_cpu > 0:
         # Tabuleiro
-        exibir_tabuleiro(vis_cpu, "")
+        if hack == 0:
+            exibir_tabuleiro(vis_cpu, "")
+        else:
+            exibir_tabuleiro(real_cpu, "")
 
         # Jogador Ataca
         print(f"\n\033[1mEscolha onde atacar.\033[0m")
@@ -507,6 +550,7 @@ def modo3():
             vencedor = "jogador"
             print("Parabéns! Você acertou o alvo.")
             input("\nEnter para continuar.")
+            os.system('cls')
             break
         else:
             animacao_explosao(3)
@@ -519,7 +563,10 @@ def modo3():
         os.system('cls')
 
         # Tabuleiro
-        exibir_tabuleiro(vis_cpu, "")
+        if hack == 0:
+            exibir_tabuleiro(vis_cpu, "")
+        else:
+            exibir_tabuleiro(real_cpu, "")
 
         # Computador Ataca
         linha = random.randint(0, 9)
@@ -557,6 +604,8 @@ def modo3():
         print("O computador encontrou a água primeiro...")
     
     input("\nEnter para continuar.")
+
+    os.system('cls')
 
     print("Feito por:")
     print(pyfiglet.figlet_format("Diego\nJoao\nLucas", font="slant"))
