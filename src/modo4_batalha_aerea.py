@@ -1,315 +1,499 @@
-import os
-import time
-import random
+"""
+modo4_batalha_aerea.py  –  Batalha Aérea em janela Pygame
+Requer: pip install pygame
 
-# ─────────────────────────────────────────────
-#  BATALHA AÉREA  –  modo4()
-#
-#  Regras:
-#   • Cada "avião" ocupa 3 casas consecutivas (horizontal ou vertical).
-#   • Ao posicionar, o jogador escolhe a direção de deslocamento do avião.
-#   • A cada RODADA completa (jogador ataca + CPU ataca), todos os aviões
-#     se movem UMA casa na sua direção. Se atingirem a borda, retornam
-#     pelo lado oposto (wrap-around).
-#   • Não há registro de água/explosão no tabuleiro — as posições mudam
-#     a cada turno, então o "histórico de tiros" não faz sentido.
-#   • Acertar QUALQUER parte de um avião o destrói por completo (ele cai).
-#   • Cada jogador/CPU tem 3 aviões.
-# ─────────────────────────────────────────────
+Regras:
+  • Cada avião ocupa 3 casas consecutivas (H ou V).
+  • Ao posicionar, o jogador escolhe a direção de voo (W/A/S/D).
+  • Após cada rodada completa, todos os aviões se movem 1 casa (wrap-around).
+  • Acertar qualquer parte de um avião o destrói por completo.
+  • Não há registro de água/explosão — o tabuleiro se move a cada turno.
+  • Cada lado tem 3 aviões.
+
+Compatibilidade: basta manter este arquivo na mesma pasta do main.py.
+    from modo4_batalha_aerea import modo4
+"""
+
+import pygame
+import random
+import sys
+import math
+import time
+
+# ─── Constantes visuais ───────────────────────────────────────────────────────
+
+W, H       = 1100, 740
+CELL       = 44
+GAP        = 3
+CELL_FULL  = CELL + GAP
+ROWS       = 10
+COLS       = 10
+FPS        = 60
+COLUNAS    = list("ABCDEFGHIJ")
+
+# Paleta
+C_BG        = ( 8,  16,  36)
+C_OCEAN     = (14,  44,  86)
+C_OCEAN_HL  = (20,  64, 118)
+C_GRID      = (28,  64, 120)
+C_WHITE     = (225, 238, 255)
+C_GRAY      = (110, 130, 165)
+C_TITLE     = ( 80, 195, 255)
+C_PANEL     = (12,  24,  56)
+C_BTN       = (28,  76, 155)
+C_BTN_H     = (46, 114, 200)
+C_BTN_PRESS = (18,  48, 105)
+C_GREEN     = ( 50, 195,  90)
+C_ORANGE    = (235, 135,  25)
+C_PURPLE    = (155,  75, 215)
+C_RED       = (215,  55,  55)
+C_YELLOW    = (250, 205,  45)
+C_HIT       = (220,  55,  40)
+C_MISS      = ( 55, 125, 200)
+C_DARK_RED  = (140,  30,  30)
+
+PLANE_COLORS = [C_GREEN, C_ORANGE, C_PURPLE]
 
 DIRECOES = {
-    "W": (-1,  0),   # cima
-    "S": ( 1,  0),   # baixo
-    "A": ( 0, -1),   # esquerda
-    "D": ( 0,  1),   # direita
+    "W": (-1,  0),
+    "S": ( 1,  0),
+    "A": ( 0, -1),
+    "D": ( 0,  1),
 }
+DIR_LABELS = {"W": "↑ Cima", "S": "↓ Baixo", "A": "← Esquerda", "D": "→ Direita"}
 
-COLUNAS = list("ABCDEFGHIJ")
+# ─── Helpers de desenho ───────────────────────────────────────────────────────
 
-# ── helpers ───────────────────────────────────
+def _init_fonts():
+    global FONT_TITLE, FONT_BIG, FONT_MED, FONT_SMALL, FONT_TINY
+    try:
+        FONT_TITLE = pygame.font.SysFont("impact",    60)
+        FONT_BIG   = pygame.font.SysFont("consolas",  32, bold=True)
+        FONT_MED   = pygame.font.SysFont("consolas",  20, bold=True)
+        FONT_SMALL = pygame.font.SysFont("consolas",  15)
+        FONT_TINY  = pygame.font.SysFont("consolas",  12)
+    except Exception:
+        FONT_TITLE = pygame.font.SysFont(None, 64)
+        FONT_BIG   = pygame.font.SysFont(None, 36)
+        FONT_MED   = pygame.font.SysFont(None, 24)
+        FONT_SMALL = pygame.font.SysFont(None, 18)
+        FONT_TINY  = pygame.font.SysFont(None, 14)
 
-def cls():
-    os.system('cls' if os.name == 'nt' else 'clear')
+def txt(surf, text, font, color, x, y, anchor="center"):
+    s = font.render(str(text), True, color)
+    r = s.get_rect()
+    setattr(r, anchor, (x, y))
+    surf.blit(s, r)
+    return r
 
-def exibir_tabuleiro_aereo(avioes, nome, mostrar=True):
-    """Monta e imprime um tabuleiro 10×10 com os aviões visíveis."""
-    grade = [['⬛'] * 10 for _ in range(10)]
-    if mostrar:
-        for av in avioes:
+def panel(surf, rect, border=C_GRID):
+    pygame.draw.rect(surf, C_PANEL, rect, border_radius=10)
+    pygame.draw.rect(surf, border, rect, 2, border_radius=10)
+
+def button(surf, rect, label, hovered, pressed=False):
+    col = C_BTN_PRESS if pressed else (C_BTN_H if hovered else C_BTN)
+    pygame.draw.rect(surf, col, rect, border_radius=8)
+    pygame.draw.rect(surf, C_TITLE, rect, 2, border_radius=8)
+    txt(surf, label, FONT_MED, C_WHITE, rect.centerx, rect.centery)
+
+def cell_px(ox, oy, r, c):
+    """Pixel top-left da célula (r, c)."""
+    return ox + c * CELL_FULL, oy + r * CELL_FULL
+
+def px_to_cell(ox, oy, px, py):
+    """Célula (r, c) a partir de pixel; None se fora."""
+    c  = (px - ox) // CELL_FULL
+    r  = (py - oy) // CELL_FULL
+    rx = (px - ox) % CELL_FULL
+    ry = (py - oy) % CELL_FULL
+    if 0 <= r < ROWS and 0 <= c < COLS and rx < CELL and ry < CELL:
+        return r, c
+    return None
+
+def draw_grid(surf, ox, oy, avioes, show_planes=True,
+              highlight=None, preview=None, preview_color=C_GREEN):
+    """Desenha tabuleiro aéreo 10×10."""
+    # células
+    for r in range(ROWS):
+        for c in range(COLS):
+            x, y = cell_px(ox, oy, r, c)
+            rc   = pygame.Rect(x, y, CELL, CELL)
+            color = C_OCEAN_HL if highlight == (r, c) else C_OCEAN
+            pygame.draw.rect(surf, color, rc, border_radius=3)
+            pygame.draw.rect(surf, C_GRID, rc, 1, border_radius=3)
+
+    # aviões
+    if show_planes:
+        for i, av in enumerate(avioes):
+            col = av.get("color", PLANE_COLORS[i % 3])
             for (r, c) in av["casas"]:
-                grade[r][c] = av["emoji"]
-    print(f"\033[1mTabuleiro {nome}\033[0m")
-    print(" " * 7, end="")
-    for ch in COLUNAS:
-        print(f"{ch}  ", end="")
-    print()
-    for i, row in enumerate(grade):
-        prefixo = f"| {i+1} |  " if i < 9 else f"| {i+1} | "
-        print(prefixo + " ".join(row))
-    print("─" * 37)
+                x, y = cell_px(ox, oy, r, c)
+                rc   = pygame.Rect(x, y, CELL, CELL)
+                pygame.draw.rect(surf, col, rc, border_radius=3)
+                pygame.draw.rect(surf, C_WHITE, rc, 1, border_radius=3)
+                txt(surf, "✈", FONT_SMALL, C_WHITE, x + CELL//2, y + CELL//2)
 
-def escolher_linha_aereo():
-    v = input("Linha (1-10): ").strip()
-    while v not in [str(x) for x in range(1, 11)]:
-        v = input("Linha válida (1-10): ").strip()
-    return int(v) - 1
+    # preview de posicionamento
+    if preview:
+        for (r, c) in preview:
+            if 0 <= r < ROWS and 0 <= c < COLS:
+                x, y = cell_px(ox, oy, r, c)
+                rc   = pygame.Rect(x, y, CELL, CELL)
+                pygame.draw.rect(surf, preview_color, rc, border_radius=3)
+                pygame.draw.rect(surf, C_WHITE, rc, 2, border_radius=3)
+                txt(surf, "✈", FONT_SMALL, C_WHITE, x + CELL//2, y + CELL//2)
 
-def escolher_coluna_aereo():
-    v = input("Coluna (A-J): ").strip().upper()
-    while v not in COLUNAS:
-        v = input("Coluna válida (A-J): ").strip().upper()
-    return COLUNAS.index(v)
+    # marcadores de acerto/erro (explosões salvas no dict do avião já removido;
+    # aqui salvamos na lista hit_marks externa se precisar — veja abaixo)
 
-def casas_aviao(linha, coluna, orientacao, tamanho=3):
-    """Retorna lista de (linha, coluna) para as casas do avião."""
-    casas = []
-    for i in range(tamanho):
-        if orientacao == "H":
-            casas.append((linha, coluna + i))
-        else:
-            casas.append((linha + i, coluna))
-    return casas
+    # rótulos
+    for c in range(COLS):
+        x, y = cell_px(ox, oy, 0, c)
+        txt(surf, COLUNAS[c], FONT_TINY, C_GRAY, x + CELL//2, y - 9)
+    for r in range(ROWS):
+        x, y = cell_px(ox, oy, r, 0)
+        txt(surf, str(r + 1), FONT_TINY, C_GRAY, x - 13, y + CELL//2)
 
-def posicoes_ocupadas(avioes):
+# ─── Animações ────────────────────────────────────────────────────────────────
+
+def anim_abate(surf, clock, ox, oy, r, c, draw_bg_fn):
+    """Explosão expandindo na célula (r, c)."""
+    cx, cy = cell_px(ox, oy, r, c)
+    cx += CELL // 2
+    cy += CELL // 2
+    for frame in range(30):
+        for ev in pygame.event.get():
+            if ev.type == pygame.QUIT:
+                pygame.quit(); sys.exit()
+        draw_bg_fn()
+        prog  = frame / 29
+        radius = int(prog * 55)
+        alpha  = int(255 * (1 - prog))
+        s = pygame.Surface((radius*2+4, radius*2+4), pygame.SRCALPHA)
+        pygame.draw.circle(s, (*C_HIT, alpha),   (radius+2, radius+2), radius+2)
+        pygame.draw.circle(s, (*C_YELLOW, alpha), (radius+2, radius+2), max(1, radius-6))
+        surf.blit(s, (cx - radius - 2, cy - radius - 2))
+        pygame.display.flip()
+        clock.tick(FPS)
+
+def anim_erro(surf, clock, ox, oy, r, c, draw_bg_fn):
+    """Splash de água na célula (r, c)."""
+    cx, cy = cell_px(ox, oy, r, c)
+    cx += CELL // 2
+    cy += CELL // 2
+    for frame in range(24):
+        for ev in pygame.event.get():
+            if ev.type == pygame.QUIT:
+                pygame.quit(); sys.exit()
+        draw_bg_fn()
+        prog   = frame / 23
+        radius = int(prog * 40)
+        alpha  = int(255 * (1 - prog))
+        s = pygame.Surface((radius*2+4, radius*2+4), pygame.SRCALPHA)
+        pygame.draw.circle(s, (*C_MISS, alpha), (radius+2, radius+2), radius+2)
+        surf.blit(s, (cx - radius - 2, cy - radius - 2))
+        pygame.display.flip()
+        clock.tick(FPS)
+
+# ─── Tela de resultado ────────────────────────────────────────────────────────
+
+def tela_resultado(surf, clock, msg, color):
+    btn = pygame.Rect(W//2 - 130, H//2 + 60, 260, 48)
+    while True:
+        mx, my = pygame.mouse.get_pos()
+        for ev in pygame.event.get():
+            if ev.type == pygame.QUIT:
+                pygame.quit(); sys.exit()
+            if ev.type == pygame.MOUSEBUTTONDOWN and btn.collidepoint(mx, my):
+                return
+        surf.fill(C_BG)
+        txt(surf, msg, FONT_BIG, color, W//2, H//2 - 20)
+        button(surf, btn, "Voltar ao menu", btn.collidepoint(mx, my))
+        pygame.display.flip()
+        clock.tick(FPS)
+
+# ─── Lógica de aviões ─────────────────────────────────────────────────────────
+
+def make_aviao(idx, casas, direcao):
+    return {
+        "casas":   list(casas),
+        "direcao": direcao,
+        "nome":    f"Avião {idx + 1}",
+        "color":   PLANE_COLORS[idx % 3],
+    }
+
+def cpu_gerar_avioes(n=3):
+    result   = []
     ocupadas = set()
-    for av in avioes:
-        for c in av["casas"]:
-            ocupadas.add(c)
-    return ocupadas
+    for i in range(n):
+        while True:
+            ori  = random.choice(("H", "V"))
+            r0   = random.randint(0, 9)
+            c0   = random.randint(0, 9)
+            cells = []
+            ok   = True
+            for j in range(3):
+                nr = r0 + (j if ori == "V" else 0)
+                nc = c0 + (j if ori == "H" else 0)
+                if not (0 <= nr < 10 and 0 <= nc < 10) or (nr, nc) in ocupadas:
+                    ok = False; break
+                cells.append((nr, nc))
+            if ok:
+                for cl in cells:
+                    ocupadas.add(cl)
+                result.append(make_aviao(i, cells, random.choice(list(DIRECOES.keys()))))
+                break
+    return result
 
-def mover_avioes(avioes):
-    """Move cada avião uma casa na sua direção com wrap-around."""
-    for av in avioes:
+def mover_avioes(lista):
+    for av in lista:
         dr, dc = DIRECOES[av["direcao"]]
-        novas = []
-        for (r, c) in av["casas"]:
-            nr = (r + dr) % 10
-            nc = (c + dc) % 10
-            novas.append((nr, nc))
-        av["casas"] = novas
+        av["casas"] = [((r + dr) % 10, (c + dc) % 10) for r, c in av["casas"]]
 
-def checar_acerto(avioes, linha, coluna):
-    """
-    Verifica se (linha, coluna) acerta algum avião.
-    Retorna o índice do avião atingido ou -1.
-    """
-    for i, av in enumerate(avioes):
-        if (linha, coluna) in av["casas"]:
+def check_hit(lista, r, c):
+    """Retorna índice do avião atingido ou -1."""
+    for i, av in enumerate(lista):
+        if (r, c) in av["casas"]:
             return i
     return -1
 
-def emojis_avioes():
-    return ["✈️", "🛩️", "🚁"]   # um emoji por avião (distinção visual)
+def preview_casas(r0, c0, ori):
+    cells = []
+    for j in range(3):
+        nr = r0 + (j if ori == "V" else 0)
+        nc = c0 + (j if ori == "H" else 0)
+        cells.append((nr, nc))
+    return cells
 
-# ── posicionamento do jogador ─────────────────
+def preview_valido(cells, ocupadas):
+    return all(0 <= r < 10 and 0 <= c < 10 and (r, c) not in ocupadas
+               for r, c in cells)
 
-def posicionar_avioes_jogador(n=3):
-    avioes = []
-    emojis = emojis_avioes()
-    for i in range(n):
-        cls()
-        exibir_tabuleiro_aereo(avioes, "do Jogador")
-        print(f"\n\033[1mPosicione o {i+1}º avião ({emojis[i]}).\033[0m")
-        print("O avião ocupa 3 casas consecutivas.")
+# ─── Fase de posicionamento ───────────────────────────────────────────────────
 
-        # orientação
-        ori = input("Orientação — [H]orizontal ou [V]ertical: ").strip().upper()
-        while ori not in ("H", "V"):
-            ori = input("Digite H ou V: ").strip().upper()
+def fase_posicionamento(surf, clock):
+    avioes_p = []
+    ori      = "H"
+    direcao  = "D"
+    OX, OY   = 85, 95
 
-        # posição inicial (canto superior-esquerdo do avião)
-        print("\nPosição inicial (canto superior-esquerdo do avião):")
-        while True:
-            linha  = escolher_linha_aereo()
-            coluna = escolher_coluna_aereo()
-            casas  = casas_aviao(linha, coluna, ori)
-            # validar limites
-            if any(r < 0 or r > 9 or c < 0 or c > 9 for (r, c) in casas):
-                print("⚠️  O avião não cabe nessa posição. Tente novamente.")
-                continue
-            # validar colisão
-            ocupadas = posicoes_ocupadas(avioes)
-            if any(p in ocupadas for p in casas):
-                print("⚠️  Posição já ocupada. Tente novamente.")
-                continue
-            break
+    for idx in range(3):
+        placed = False
+        while not placed:
+            mx, my = pygame.mouse.get_pos()
+            cell   = px_to_cell(OX, OY, mx, my)
 
-        # direção de movimento
-        print("\nDireção de movimento a cada rodada:")
-        print("  W = Cima  |  S = Baixo  |  A = Esquerda  |  D = Direita")
-        direcao = input("Direção: ").strip().upper()
-        while direcao not in DIRECOES:
-            direcao = input("Digite W, A, S ou D: ").strip().upper()
+            prev   = preview_casas(cell[0], cell[1], ori) if cell else []
+            ocup   = {c for av in avioes_p for c in av["casas"]}
+            valid  = preview_valido(prev, ocup) if prev else False
+            prev_col = PLANE_COLORS[idx] if valid else C_DARK_RED
 
-        avioes.append({
-            "casas":    casas,
-            "direcao":  direcao,
-            "emoji":    emojis[i],
-            "nome":     f"Avião {i+1}",
-        })
+            # ── eventos ──
+            for ev in pygame.event.get():
+                if ev.type == pygame.QUIT:
+                    pygame.quit(); sys.exit()
+                if ev.type == pygame.KEYDOWN:
+                    k = ev.key
+                    if k == pygame.K_r or k == pygame.K_SPACE:
+                        ori = "V" if ori == "H" else "H"
+                    elif k == pygame.K_w: direcao = "W"
+                    elif k == pygame.K_s: direcao = "S"
+                    elif k == pygame.K_a: direcao = "A"
+                    elif k == pygame.K_d: direcao = "D"
+                if ev.type == pygame.MOUSEBUTTONDOWN and valid:
+                    avioes_p.append(make_aviao(idx, prev, direcao))
+                    placed = True
 
-    return avioes
+            # ── desenho ──
+            surf.fill(C_BG)
 
-# ── posicionamento da CPU ─────────────────────
+            # painel esquerdo — grid
+            panel(surf, pygame.Rect(20, 20, 560, 700))
+            draw_grid(surf, OX, OY, avioes_p, show_planes=True,
+                      preview=prev, preview_color=prev_col)
+            txt(surf, "SEU TABULEIRO", FONT_MED, C_TITLE, OX + 218, 60)
 
-def posicionar_avioes_cpu(n=3, avioes_jogador=None):
-    avioes = []
-    emojis = emojis_avioes()
-    ocupadas_j = posicoes_ocupadas(avioes_jogador) if avioes_jogador else set()
+            # painel direito — instruções
+            info_x = 630
+            panel(surf, pygame.Rect(610, 20, 470, 700))
+            txt(surf, "BATALHA AÉREA", FONT_TITLE, C_TITLE, info_x + 215, 80)
 
-    for i in range(n):
-        while True:
-            ori    = random.choice(("H", "V"))
-            linha  = random.randint(0, 9)
-            coluna = random.randint(0, 9)
-            casas  = casas_aviao(linha, coluna, ori)
-            if any(r < 0 or r > 9 or c < 0 or c > 9 for (r, c) in casas):
-                continue
-            ocupadas = posicoes_ocupadas(avioes)
-            if any(p in ocupadas for p in casas):
-                continue
-            break
-        direcao = random.choice(list(DIRECOES.keys()))
-        avioes.append({
-            "casas":   casas,
-            "direcao": direcao,
-            "emoji":   emojis[i],
-            "nome":    f"Avião CPU {i+1}",
-        })
-    return avioes
+            lines = [
+                ("Posicione seus 3 aviões",          C_WHITE, FONT_MED,  160),
+                (f"Avião {idx+1}/3",                 PLANE_COLORS[idx], FONT_BIG, 220),
+                ("",                                  C_WHITE, FONT_SMALL, 260),
+                ("[R] ou [Espaço]  →  girar",        C_GRAY,  FONT_SMALL, 295),
+                (f"Orientação atual:  {'Horizontal' if ori=='H' else 'Vertical'}",
+                                                      C_WHITE, FONT_SMALL, 325),
+                ("",                                  C_WHITE, FONT_SMALL, 355),
+                ("Direção de voo  [W/A/S/D]:",       C_GRAY,  FONT_SMALL, 385),
+                (DIR_LABELS[direcao],                C_YELLOW, FONT_MED,  420),
+                ("",                                  C_WHITE, FONT_SMALL, 455),
+                ("Clique no grid para confirmar",     C_GRAY,  FONT_SMALL, 490),
+            ]
+            for (t, col, font, y) in lines:
+                if t:
+                    txt(surf, t, font, col, info_x + 215, y)
 
-# ── animações leves (texto) ───────────────────
+            # legenda de aviões já posicionados
+            if avioes_p:
+                txt(surf, "Já posicionados:", FONT_SMALL, C_GRAY, info_x + 215, 550)
+                for k, av in enumerate(avioes_p):
+                    txt(surf, f"  {av['nome']}  {DIR_LABELS[av['direcao']]}",
+                        FONT_SMALL, av["color"], info_x + 215, 575 + k * 22)
 
-def anim_abate():
-    frames = [
-        "         ✈️",
-        "        ✈️💨",
-        "       💥✈️",
-        "      💥💥",
-        "    💥💥💥",
-        "  ╔══════════╗\n  ║  ABATIDO! ║\n  ╚══════════╝",
-    ]
-    for f in frames:
-        cls()
-        print("\n\n" + f)
-        time.sleep(0.2)
-    time.sleep(0.6)
+            pygame.display.flip()
+            clock.tick(FPS)
 
-def anim_erro():
-    frames = ["         💣", "\n         💣", "\n\n         💣", "\n\n💨  💨  💨  💨"]
-    for f in frames:
-        cls()
-        print("\n\n" + f)
-        time.sleep(0.18)
-    cls()
-    print("\n\n  ╔════════════╗\n  ║  ERROU!    ║\n  ╚════════════╝")
-    time.sleep(0.8)
+    return avioes_p
 
-# ── loop principal do modo ────────────────────
+# ─── Loop principal do modo ───────────────────────────────────────────────────
 
 def modo4():
-    cls()
-    print("\033[1m" + "=" * 40)
-    print("       ✈️  BATALHA AÉREA  ✈️")
-    print("=" * 40 + "\033[0m")
-    print("""
-Regras:
-  • Cada avião ocupa 3 casas consecutivas.
-  • Ao posicionar, escolha a DIREÇÃO de voo.
-  • Após cada rodada completa, os aviões se
-    movem 1 casa nessa direção (wrap-around).
-  • Acerte QUALQUER parte do avião para
-    derrubá-lo por completo!
-  • Não há registro de água/explosão —
-    o tabuleiro é limpo a cada turno.
-""")
-    input("Pressione Enter para começar...")
+    # Garantir pygame inicializado (o main.py já chama pygame.init(),
+    # mas chamamos novamente para o caso de uso standalone)
+    if not pygame.get_init():
+        pygame.init()
+
+    surf  = pygame.display.set_mode((W, H))
+    pygame.display.set_caption("Batalha Aérea ✈")
+    clock = pygame.time.Clock()
+
+    _init_fonts()
 
     # ── posicionamento ──
-    avioes_jogador = posicionar_avioes_jogador(n=3)
-    cls()
-    print("Posicionando aviões da CPU...")
-    avioes_cpu = posicionar_avioes_cpu(n=3)
-    time.sleep(1)
-    cls()
+    avioes_p   = fase_posicionamento(surf, clock)
+    avioes_cpu = cpu_gerar_avioes(3)
 
-    rodada = 1
+    rodada  = 1
+    msg     = "Sua vez — clique no tabuleiro inimigo para atirar."
+    msg_col = C_WHITE
 
-    while avioes_jogador and avioes_cpu:
-        # ── exibir estado ──
-        cls()
-        print(f"\033[1m{'─'*40}\n  RODADA {rodada}\n{'─'*40}\033[0m\n")
+    OX_P,  OY_P  = 30,  95    # grid do jogador
+    OX_E,  OY_E  = 600, 95    # grid inimigo
 
-        exibir_tabuleiro_aereo(avioes_cpu, "do Computador (alvo)", mostrar=False)
-        print(f"Aviões inimigos restantes: {len(avioes_cpu)}\n")
+    while avioes_p and avioes_cpu:
 
-        exibir_tabuleiro_aereo(avioes_jogador, "do Jogador")
-        print(f"Seus aviões restantes: {len(avioes_jogador)}\n")
+        # ── turno do jogador ──
+        player_done = False
+        while not player_done:
+            mx, my = pygame.mouse.get_pos()
+            cell_e = px_to_cell(OX_E, OY_E, mx, my)
 
-        # ── ataque do jogador ──
-        print("\033[1mEscolha onde atacar:\033[0m")
-        linha  = escolher_linha_aereo()
-        coluna = escolher_coluna_aereo()
-        cls()
+            def draw_scene():
+                surf.fill(C_BG)
 
-        idx = checar_acerto(avioes_cpu, linha, coluna)
-        if idx >= 0:
-            abatido = avioes_cpu.pop(idx)
-            anim_abate()
-            print(f"💥 Você abateu o {abatido['nome']} da CPU!")
-            if not avioes_cpu:
-                input("\nEnter para ver o resultado...")
-                cls()
-                break
-        else:
-            anim_erro()
-            print("Tiro no vazio — o inimigo está em outro lugar!")
+                # painéis
+                panel(surf, pygame.Rect(15,  15, 555, 710))
+                panel(surf, pygame.Rect(585, 15, 510, 710))
 
-        input("\nEnter para o ataque da CPU...")
-        cls()
+                # grids
+                draw_grid(surf, OX_P, OY_P, avioes_p,   show_planes=True)
+                draw_grid(surf, OX_E, OY_E, avioes_cpu, show_planes=False,
+                          highlight=cell_e)
 
-        # ── ataque da CPU ──
-        # A CPU escolhe aleatoriamente (poderia ser "inteligente", mas mantemos simples)
-        linha_cpu  = random.randint(0, 9)
-        coluna_cpu = random.randint(0, 9)
+                # rótulos
+                txt(surf, "SEUS AVIÕES",      FONT_MED, C_TITLE, OX_P + 218,  60)
+                txt(surf, f"Restantes: {len(avioes_p)}",
+                    FONT_SMALL, C_GRAY, OX_P + 218, 660)
+                txt(surf, "AVIÕES INIMIGOS", FONT_MED, C_TITLE, OX_E + 218,  60)
+                txt(surf, f"Restantes: {len(avioes_cpu)}",
+                    FONT_SMALL, C_GRAY, OX_E + 218, 660)
+                txt(surf, f"Rodada {rodada}", FONT_SMALL, C_GRAY, W//2, 690)
+                txt(surf, msg, FONT_SMALL, msg_col, W//2, 715)
 
-        print(f"\nA CPU escolheu a linha \033[1m{linha_cpu+1}\033[0m.")
-        print(f"A CPU escolheu a coluna \033[1m{COLUNAS[coluna_cpu]}\033[0m.")
-        time.sleep(2)
-        cls()
+            draw_scene()
+            pygame.display.flip()
+            clock.tick(FPS)
 
-        idx_j = checar_acerto(avioes_jogador, linha_cpu, coluna_cpu)
+            for ev in pygame.event.get():
+                if ev.type == pygame.QUIT:
+                    pygame.quit(); sys.exit()
+                if ev.type == pygame.MOUSEBUTTONDOWN and cell_e:
+                    r, c = cell_e
+                    idx  = check_hit(avioes_cpu, r, c)
+                    if idx >= 0:
+                        nome = avioes_cpu.pop(idx)["nome"]
+                        anim_abate(surf, clock, OX_E, OY_E, r, c, draw_scene)
+                        msg     = f"💥 Você abateu o {nome} inimigo!"
+                        msg_col = C_HIT
+                    else:
+                        anim_erro(surf, clock, OX_E, OY_E, r, c, draw_scene)
+                        msg     = "Tiro no vazio — inimigo em outro lugar!"
+                        msg_col = C_MISS
+                    player_done = True
+
+        if not avioes_cpu:
+            break
+
+        # ── turno da CPU ──
+        pygame.time.wait(700)
+        r_cpu = random.randint(0, 9)
+        c_cpu = random.randint(0, 9)
+
+        def draw_cpu_turn():
+            surf.fill(C_BG)
+            panel(surf, pygame.Rect(15,  15, 555, 710))
+            panel(surf, pygame.Rect(585, 15, 510, 710))
+            draw_grid(surf, OX_P, OY_P, avioes_p,   show_planes=True)
+            draw_grid(surf, OX_E, OY_E, avioes_cpu, show_planes=False)
+            txt(surf, "SEUS AVIÕES",     FONT_MED, C_TITLE, OX_P+218, 60)
+            txt(surf, f"Restantes: {len(avioes_p)}", FONT_SMALL, C_GRAY, OX_P+218, 660)
+            txt(surf, "AVIÕES INIMIGOS", FONT_MED, C_TITLE, OX_E+218, 60)
+            txt(surf, f"Restantes: {len(avioes_cpu)}", FONT_SMALL, C_GRAY, OX_E+218, 660)
+            txt(surf, f"CPU atacou  {r_cpu+1}{COLUNAS[c_cpu]}  …",
+                FONT_MED, C_ORANGE, W//2, 715)
+
+        draw_cpu_turn()
+        pygame.display.flip()
+        pygame.time.wait(600)
+
+        idx_j = check_hit(avioes_p, r_cpu, c_cpu)
         if idx_j >= 0:
-            abatido = avioes_jogador.pop(idx_j)
-            anim_abate()
-            print(f"💥 A CPU abateu o seu {abatido['nome']}!")
-            if not avioes_jogador:
-                input("\nEnter para ver o resultado...")
-                cls()
-                break
+            nome = avioes_p.pop(idx_j)["nome"]
+            anim_abate(surf, clock, OX_P, OY_P, r_cpu, c_cpu, draw_cpu_turn)
+            msg     = f"CPU abateu seu {nome}!"
+            msg_col = C_RED
         else:
-            anim_erro()
-            print("A CPU errou! Seus aviões continuam no ar.")
+            anim_erro(surf, clock, OX_P, OY_P, r_cpu, c_cpu, draw_cpu_turn)
+            msg     = f"CPU errou em {r_cpu+1}{COLUNAS[c_cpu]}."
+            msg_col = C_MISS
 
-        input("\nEnter para a próxima rodada (os aviões se moverão)...")
-        cls()
+        if not avioes_p:
+            break
 
-        # ── movimento ──
+        # ── mover aviões ──
+        pygame.time.wait(500)
         mover_avioes(avioes_cpu)
-        mover_avioes(avioes_jogador)
-        print("🌐 Os aviões se moveram!")
-        time.sleep(1)
+        mover_avioes(avioes_p)
+
+        # flash de movimento
+        surf.fill(C_BG)
+        panel(surf, pygame.Rect(15,  15, 555, 710))
+        panel(surf, pygame.Rect(585, 15, 510, 710))
+        draw_grid(surf, OX_P, OY_P, avioes_p,   show_planes=True)
+        draw_grid(surf, OX_E, OY_E, avioes_cpu, show_planes=False)
+        txt(surf, "SEUS AVIÕES",     FONT_MED, C_TITLE, OX_P+218, 60)
+        txt(surf, "AVIÕES INIMIGOS", FONT_MED, C_TITLE, OX_E+218, 60)
+        txt(surf, "✈  Os aviões se moveram!  ✈", FONT_MED, C_YELLOW, W//2, 715)
+        pygame.display.flip()
+        pygame.time.wait(900)
 
         rodada += 1
-        cls()
+        msg     = "Sua vez — clique no tabuleiro inimigo para atirar."
+        msg_col = C_WHITE
 
     # ── resultado ──
-    if not avioes_cpu and avioes_jogador:
-        print("\033[1m🎉 PARABÉNS! Você venceu a Batalha Aérea! 🎉\033[0m")
-    elif not avioes_jogador and avioes_cpu:
-        print("\033[1m😞 A CPU venceu a Batalha Aérea...\033[0m")
+    if not avioes_cpu and avioes_p:
+        tela_resultado(surf, clock, "🎉 Você venceu a Batalha Aérea!", C_GREEN)
+    elif not avioes_p and avioes_cpu:
+        tela_resultado(surf, clock, "😞 A CPU venceu a Batalha Aérea...", C_RED)
     else:
-        print("\033[1m🤝 Empate! Ambos ficaram sem aviões.\033[0m")
+        tela_resultado(surf, clock, "🤝 Empate!", C_YELLOW)
 
-    input("\nEnter para continuar...")
-    cls()
+
+# ─── Execução standalone (opcional) ──────────────────────────────────────────
+if __name__ == "__main__":
+    pygame.init()
+    modo4()
+    pygame.quit()
