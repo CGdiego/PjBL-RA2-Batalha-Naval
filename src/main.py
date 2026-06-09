@@ -203,12 +203,12 @@ def exibir_tabuleiro(tabuleiro, nome):
         print(" ".join(tabuleiro[i]))
     print("─" * 37)
 
-EMBARCACOES = [
-    {"nome": "Porta-aviões",     "tamanho": 5},
-    {"nome": "Navio-tanque",     "tamanho": 4},
+barcos = [
+    {"nome": "Porta-aviões", "tamanho": 5},
+    {"nome": "Navio-tanque", "tamanho": 4},
     {"nome": "Contratorpedeiro", "tamanho": 3},
-    {"nome": "Submarino",        "tamanho": 2},
-    {"nome": "Destróier",        "tamanho": 1},
+    {"nome": "Submarino", "tamanho": 2},
+    {"nome": "Destróier", "tamanho": 1},
 ]
  
 def posicoes_navio(linha, coluna, tamanho, direcao):
@@ -242,7 +242,7 @@ def main():
         print("Bem-vindo à".center(69))
         print(pyfiglet.figlet_format("Batalha Naval", font="slant")) # Título usando biblioteca "pyfiglet"
 
-        modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador (W.I.P.)\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea (W.I.P.)\n").replace(" ", "")
+        modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea (W.I.P.)\n").replace(" ", "")
         while not modo in ["1", "2", "3", "4", "anim", "tab", "hack"]:
             modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ").replace(" ", "")
 
@@ -288,9 +288,9 @@ def modo1():
     barco_cpu = 5
  
     # Jogador
-    for emb in EMBARCACOES:
-        tamanho = emb["tamanho"]
-        nome    = emb["nome"]
+    for b in barcos:
+        tamanho = b["tamanho"]
+        nome    = b["nome"]
  
         exibir_tabuleiro(real_jogador, "do Jogador")
         print(f"\n\033[1mPosicione o {nome} (tamanho: {tamanho}).\033[0m")
@@ -312,8 +312,8 @@ def modo1():
         limpar()
  
     # Computador
-    for emb in EMBARCACOES:
-        tamanho = emb["tamanho"]
+    for b in barcos:
+        tamanho = b["tamanho"]
         while True:
             linha    = random.randint(0, 9)
             coluna   = random.randint(0, 9)
