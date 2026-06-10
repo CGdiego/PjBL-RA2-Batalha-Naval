@@ -30,69 +30,69 @@ except:
     som_splash   = None
 
 real_jogador = [
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10
 ]
 
 vis_jogador = [
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10
 ]
 
 real_cpu = [
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10
 ]
 
 vis_cpu = [
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10,
-    ['⬛'] * 10
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10,
+    ["⬛"] * 10
 ]
 
 def tabuleiro_demo():
     demo = [
-        ['⬛','⬛','💧','⬛','⬛','⬛','💥','💧','⬛','⬛'],
-        ['⬛','🚢','🚢','⬛','💧','⬛','💥','⬛','⬛','⬛'],
-        ['⬛','⬛','⬛','⬛','⬛','⬛','🚢','⬛','💧','⬛'],
-        ['💧','⬛','🚢','🚢','🚢','🚢','⬛','⬛','⬛','⬛'],
-        ['⬛','⬛','💧','⬛','⬛','⬛','⬛','⬛','⬛','⬛'],
-        ['⬛','⬛','⬛','⬛','💧','⬛','⬛','⬛','⬛','💥'],
-        ['⬛','💧','⬛','⬛','⬛','⬛','⬛','💧','⬛','🚢'],
-        ['⬛','⬛','⬛','💧','⬛','⬛','⬛','⬛','⬛','🚢'],
-        ['⬛','⬛','⬛','⬛','⬛','💥','⬛','⬛','⬛','🚢'],
-        ['💧','⬛','⬛','⬛','⬛','⬛','⬛','💧','⬛','🚢']
+        ["⬛","⬛","💧","⬛","⬛","⬛","💥","💧","⬛","⬛"],
+        ["⬛","🚢","🚢","⬛","💧","⬛","💥","⬛","⬛","⬛"],
+        ["⬛","⬛","⬛","⬛","⬛","⬛","🚢","⬛","💧","⬛"],
+        ["💧","⬛","🚢","🚢","🚢","🚢","⬛","⬛","⬛","⬛"],
+        ["⬛","⬛","💧","⬛","⬛","⬛","⬛","⬛","⬛","⬛"],
+        ["⬛","⬛","⬛","⬛","💧","⬛","⬛","⬛","⬛","💥"],
+        ["⬛","💧","⬛","⬛","⬛","⬛","⬛","💧","⬛","🚢"],
+        ["⬛","⬛","⬛","💧","⬛","⬛","⬛","⬛","⬛","🚢"],
+        ["⬛","⬛","⬛","⬛","⬛","💥","⬛","⬛","⬛","🚢"],
+        ["💧","⬛","⬛","⬛","⬛","⬛","⬛","💧","⬛","🚢"]
     ]
 
     exibir_tabuleiro(demo, "Demo")
@@ -222,9 +222,7 @@ def posicoes_navio(linha, coluna, tamanho, direcao):
  
 def posicionamento_valido(tabuleiro, posicoes):
     for l, c in posicoes:
-        if not (0 <= l <= 9 and 0 <= c <= 9):
-            return False
-        if tabuleiro[l][c] != '⬛':
+        if not (0 <= l <= 9 and 0 <= c <= 9) or tabuleiro[l][c] != "⬛":
             return False
     return True
  
@@ -233,6 +231,12 @@ def escolher_direcao():
     while direcao not in ["H", "V"]:
         direcao = input("\nDireção válida ([H]orizontal / [V]ertical): ").strip().upper()
     return direcao
+
+def navio_afundou(tabuleiro, id_navio):
+    for linha in tabuleiro:
+        if id_navio in linha:
+            return False
+    return True
 
 hack = False
 
@@ -288,43 +292,43 @@ def modo1():
     barco_cpu = 5
  
     # Jogador
-    for b in barcos:
-        tamanho = b["tamanho"]
-        nome    = b["nome"]
- 
+    for i, barco in enumerate(barcos):
+        tamanho = barco["tamanho"]
+        nome = barco["nome"]
+        id_navio = i + 2
+
         exibir_tabuleiro(real_jogador, "do Jogador")
         print(f"\n\033[1mPosicione o {nome} (tamanho: {tamanho}).\033[0m")
- 
+
         while True:
-            linha   = escolher_linha()
-            coluna  = escolher_coluna()
-            direcao = "H" if tamanho == 1 else escolher_direcao()
+            linha  = escolher_linha()
+            coluna = escolher_coluna()
+            direcao = escolher_direcao()
             posicoes = posicoes_navio(linha, coluna, tamanho, direcao)
- 
+
             if posicionamento_valido(real_jogador, posicoes):
                 for l, c in posicoes:
-                    real_jogador[l][c] = '🚢'
-                    vis_jogador[l][c]  = '🚢'
+                    real_jogador[l][c] = id_navio
+                    vis_jogador[l][c]  = "🚢"
                 break
             else:
                 print("\nPosição inválida! O navio sai do tabuleiro ou sobrepõe outro. Tente novamente.")
- 
+
         limpar()
  
     # Computador
-    for b in barcos:
-        tamanho = b["tamanho"]
+    for i, barco in enumerate(barcos):
+        tamanho = barco["tamanho"]
+        id_navio = i + 2
         while True:
-            linha    = random.randint(0, 9)
-            coluna   = random.randint(0, 9)
-            direcao  = random.choice(["H", "V"])
+            linha = random.randint(0, 9)
+            coluna = random.randint(0, 9)
+            direcao = random.choice(["H", "V"])
             posicoes = posicoes_navio(linha, coluna, tamanho, direcao)
             if posicionamento_valido(real_cpu, posicoes):
                 for l, c in posicoes:
-                    real_cpu[l][c] = '🚢'
+                    real_cpu[l][c] = id_navio
                 break
- 
-    limpar()
  
     while barco_cpu > 0 and barco_jogador > 0:
         # Tabuleiro do Computador
@@ -349,17 +353,27 @@ def modo1():
             coluna = escolher_coluna()
  
         limpar()
- 
-        if real_cpu[linha][coluna] == "🚢":
+
+        id_atingido = real_cpu[linha][coluna]
+        if id_atingido != "⬛":
             animacao_explosao(2)
             real_cpu[linha][coluna] = "💥"
             vis_cpu[linha][coluna]  = "💥"
-            barco_cpu -= 1
             print("Parabéns! Você acertou o alvo.")
-            if barco_cpu == 0:
+
+            if navio_afundou(real_cpu, id_atingido):
+                barco_cpu -= 1
+                print(f"Você afundou o {barcos[id_atingido - 2]['nome']}!")
+
+                if barco_cpu == 0:
+                    input("\nEnter para continuar.")
+                    limpar()
+                    break
+
+                print("Ataque novamente!")
                 input("\nEnter para continuar.")
                 limpar()
-                break
+                continue
         else:
             animacao_splash(2)
             real_cpu[linha][coluna] = "💧"
@@ -393,14 +407,20 @@ def modo1():
  
         time.sleep(3)
  
-        if real_jogador[linha][coluna] == "🚢":
+        id_atingido = real_jogador[linha][coluna]
+        if id_atingido != "⬛":
             animacao_explosao(2)
             real_jogador[linha][coluna] = "💥"
-            barco_jogador -= 1
+            vis_jogador[linha][coluna]  = "💥"
             print("O computador acertou o alvo.")
+
+            if navio_afundou(real_jogador, id_atingido):
+                barco_jogador -= 1
+                print(f"O computador afundou o seu {barcos[id_atingido - 2]['nome']}!")
         else:
             animacao_splash(2)
             real_jogador[linha][coluna] = "💧"
+            vis_jogador[linha][coluna]  = "💧"
             print("O computador errou o alvo.")
  
         vis_jogador[linha][coluna] = real_jogador[linha][coluna]
