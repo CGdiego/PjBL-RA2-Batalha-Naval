@@ -262,7 +262,7 @@ def main():
             modo3()
             break
         elif modo == "4":
-            modo4()
+            modo4(hack=hack, som_explosao=som_explosao, som_splash=som_splash)
             break
         elif modo == "anim":
             animacao_splash(1)
