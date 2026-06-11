@@ -246,7 +246,7 @@ def main():
         print("Bem-vindo à".center(69))
         print(pyfiglet.figlet_format("Batalha Naval", font="slant")) # Título usando biblioteca "pyfiglet"
 
-        modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea (W.I.P.)\n").replace(" ", "")
+        modo = input("Escolha um dos modos de jogo:\n[1] - Humano x Computador\n[2] - Simplificado\n[3] - Caça-Água\n[4] - Batalha Aérea\n").replace(" ", "")
         while not modo in ["1", "2", "3", "4", "anim", "tab", "hack"]:
             modo = input("\nInsira uma opção válida (1, 2, 3 ou 4): ").replace(" ", "")
 

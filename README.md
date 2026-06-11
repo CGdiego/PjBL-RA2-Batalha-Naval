@@ -13,7 +13,6 @@
   <a href="#-sobre-o-projeto">Sobre</a> •
   <a href="#-modos-de-jogo">Modos de Jogo</a> •
   <a href="#-critérios-atendidos">Critérios</a> •
-  <a href="#-ideias-para-o-futuro">Futuro</a> •
   <a href="#-licença">Licença</a>
 </p>
 
@@ -31,45 +30,33 @@
 
 ## 📝 Sobre o Projeto
 
-Este é um clássico jogo de **Batalha Naval** desenvolvido inteiramente em Python, utilizando matrizes bidimensionais ($10 \times 10$) para renderizar os tabuleiros e gerenciar as mecânicas de posicionamento e ataque em turnos contra a CPU. 
+Este é um clássico jogo de **Batalha Naval** desenvolvido inteiramente em Python, utilizando matrizes bidimensionais (10 × 10) para renderizar os tabuleiros e gerenciar as mecânicas de posicionamento e ataque em turnos contra a CPU.
 
-O projeto conta com uma interface estilizada via terminal usando títulos em ASCII art gerados pela biblioteca `pyfiglet`.
+O projeto conta com uma interface estilizada via terminal usando títulos em ASCII art gerados pela biblioteca `pyfiglet`, efeitos sonoros via `pygame`, e um quarto modo de jogo com interface gráfica completa.
 
 ---
 
 ## 🎮 Modos de Jogo
 
-O jogo oferece um menu interativo com diferentes dinâmicas de jogabilidade:
-
 | Modo | Descrição | Status |
 | :---: | :--- | :---: |
-| **1️⃣ Humano x Computador** | O modo clássico. Você posiciona 5 navios estrategicamente e tenta afundar a frota da CPU antes que ela destrua a sua. | `W.I.P.` 🛠️ |
-| **2️⃣ Simplificado** | Uma versão direta da disputa clássica para partidas rápidas e testes de mecânicas de tiro. | `Pronto` ✅ |
-| **3️⃣ Caça-Água** | Um modo invertido e desafiador! O mapa está completamente tomado por embarcações ocultas e há apenas **1 bloco de água**. O objetivo é ser o primeiro a encontrar o espaço vazio. | `Pronto` ✅ |
-| **4️⃣ Batalha Aérea** | Uma expansão do jogo trocando navios por aviões que se movem dinamicamente pelo mapa. | `Planejado` ⏳ |
+| **1️⃣ Humano x Computador** | O modo clássico completo. Posicione 5 navios de tamanhos diferentes (do Porta-aviões ao Destroier) e tente afundar a frota da CPU. Um navio só afunda quando todas as suas partes são atingidas. | ✅ |
+| **2️⃣ Simplificado** | Versão direta com 5 navios de tamanho único para partidas rápidas. | ✅ |
+| **3️⃣ Caça-Água** | Modo invertido: o mapa está cheio de navios e há apenas **1 bloco de água**. O primeiro a encontrar o espaço vazio vence. | ✅ |
+| **4️⃣ Batalha Aérea** | Modo com janela gráfica (Pygame). Posicione 3 aviões, escolha a direção de voo de cada um e tente abater a frota inimiga. Os aviões se movem uma casa após cada rodada. | ✅ |
 
 ---
 
 ## 🎯 Critérios de Avaliação Atendidos
 
-Para garantir a nota máxima nos critérios da rubrica, o código foi estruturado com:
-
-* **Utilização de Matrizes:** Implementação rigorosa de matrizes para os tabuleiros real e visual do jogador e da CPU.
-* **Modularização (Funções):** Código limpo e sem duplicidade, dividindo as responsabilidades de entrada de dados (`escolher_linha`, `escolher_coluna`), renderização (`exibir_tabuleiro`) e lógicas de jogo.
-* **Sistema de Feedback:** Mensagens claras em cores (`ANSI escape codes`) indicando se o jogador acertou o alvo ou errou, além de placar em tempo real de embarcações restantes.
-
----
-
-## 🚀 Ideias para o Futuro (Backlog)
-
-Nosso quadro de melhorias e próximas implementações inclui:
-- [ ] Implementação de efeitos sonoros de explosão e splash utilizando a biblioteca `pygame`.
-- [ ] Trilha sonora de fundo dinâmica durante as partidas.
-- [ ] Transição visual dos tiros usando animações baseadas em emojis para simular a bomba caindo.
-- [ ] Substituição completa dos caracteres convencionais `X` e `O` por emojis temáticos de explosão (💥) e água (🌊).
+* **Matrizes:** Quatro matrizes 10×10 (`real_jogador`, `vis_jogador`, `real_cpu`, `vis_cpu`) controlam o estado real e a visão de cada jogador.
+* **Modularização:** Funções separadas para entrada (`escolher_linha`, `escolher_coluna`, `escolher_direcao`), renderização (`exibir_tabuleiro`) e lógica de jogo (`posicionamento_valido`, `navio_afundou`).
+* **5+ embarcações:** Todos os modos posicionam no mínimo 5 peças por jogador.
+* **Feedback:** Mensagens em tempo real de acerto/erro, placar de embarcações restantes, identificação de qual navio afundou e anúncio do vencedor ao final.
+* **Desafio (modo 1):** Implementação completa com todas as 5 embarcações originais em tamanhos distintos, posicionamento H/V, e lógica de afundamento parcial — o navio só é contado como destruído quando todas as suas posições forem atingidas.
 
 ---
 
 ## 📄 Licença
 
-Este projeto está sob a licença **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**. Isso significa que o trabalho pode ser compartilhado e adaptado livremente, desde que para fins estritamente não comerciais e atribuindo os créditos aos autores originais.
+Este projeto está sob a licença **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)**. O trabalho pode ser compartilhado e adaptado livremente para fins não comerciais, desde que os créditos aos autores originais sejam mantidos.
