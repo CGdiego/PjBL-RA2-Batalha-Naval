@@ -196,7 +196,7 @@ def anim_agua(surf, clock, ox, oy, lin, col, redesenhar, som=None):
         clock.tick(FPS)
 
 def desenhar_titulo(surf, imagem_aviao):
-    ts = fonte_titulo.render("BATALHA AEREA", True, CIANO)
+    ts = fonte_titulo.render("BATALHA AÉREA", True, CIANO)
     tw, th = ts.get_size()
     img_w = imagem_aviao.get_width() if imagem_aviao else 0
     gap   = 12
@@ -369,32 +369,32 @@ def posicionar_avioes(surf, clock, imagem_aviao):
 
         desenhar_painel(surf, pygame.Rect(CTRL_X - 160, GRID_Y - PAD_CIMA - 8, 320, BOARD_H + PAD_CIMA + 16))
 
-        escrever(surf, f"Posicionando Aviao {idx+1} de 3", fonte_media, BRANCO, CTRL_X, GRID_Y + 20)
+        escrever(surf, f"Posicionando Avião {idx+1} de 3", fonte_media, BRANCO, CTRL_X, GRID_Y + 20)
 
         if valido:
-            escrever(surf, "Posicao valida — clique para confirmar", fonte_pequena, VERDE,    CTRL_X, GRID_Y + 50)
+            escrever(surf, "Posicao válida. Clique para confirmar", fonte_pequena, VERDE,    CTRL_X, GRID_Y + 50)
         elif preview:
-            escrever(surf, "Posicao invalida!",                      fonte_pequena, VERMELHO, CTRL_X, GRID_Y + 50)
+            escrever(surf, "Posicao inválida!",                      fonte_pequena, VERMELHO, CTRL_X, GRID_Y + 50)
         else:
             escrever(surf, "Passe o mouse sobre o grid",             fonte_pequena, CINZA,    CTRL_X, GRID_Y + 50)
 
         ori_txt = "Horizontal  (—)" if orientacao == "H" else "Vertical  (|)"
-        escrever(surf, f"Orientacao: {ori_txt}", fonte_pequena, LARANJA, CTRL_X, GRID_Y + 90)
+        escrever(surf, f"Orientação: {ori_txt}", fonte_pequena, LARANJA, CTRL_X, GRID_Y + 90)
 
         destino_ori = "Vertical" if orientacao == "H" else "Horizontal"
         desenhar_botao(surf, btn_girar, f"[R] Girar -> {destino_ori}", btn_girar.collidepoint(mx, my))
 
-        escrever(surf, "Direcao de voo:", fonte_media, CINZA, CTRL_X, GRID_Y + 298)
+        escrever(surf, "Direção de voo:", fonte_media, CINZA, CTRL_X, GRID_Y + 298)
         desenhar_botoes_direcao(surf, botoes_dir, direcao, orientacao)
 
         nota = "Horizontais: so esq/dir" if orientacao == "H" else "Verticais: so cima/baixo"
         escrever(surf, nota, fonte_mini, CINZA, CTRL_X, GRID_Y + 430)
 
         if avioes:
-            escrever(surf, "Ja posicionados:", fonte_pequena, CINZA, CTRL_X, GRID_Y + 460)
+            escrever(surf, "Já posicionados:", fonte_pequena, CINZA, CTRL_X, GRID_Y + 460)
             for k, av in enumerate(avioes):
                 ori_icone = "—" if av["orientacao"] == "H" else "|"
-                escrever(surf, f"Aviao {k+1}   {SETA[av['direcao']]}  {ori_icone}",
+                escrever(surf, f"Avião {k+1}   {SETA[av['direcao']]}  {ori_icone}",
                          fonte_mini, av["cor"], CTRL_X, GRID_Y + 482 + k * 20)
 
         pygame.display.flip()
@@ -410,9 +410,9 @@ def montar_cena(surf, imagem_aviao, avioes_jogador, avioes_cpu, rodada, mensagem
         fundo_grid(surf, GRID_E_X)
         desenhar_grid(surf, GRID_P_X, GRID_Y, avioes_jogador, mostrar_avioes=True)
         desenhar_grid(surf, GRID_E_X, GRID_Y, avioes_cpu, mostrar_avioes=hack, destaque=destaque_cpu)
-        escrever(surf, "SEUS AVIOES",     fonte_media, CIANO, GRID_P_X + BOARD_W // 2, GRID_Y - PAD_CIMA - 24)
+        escrever(surf, "SEUS AVIÕES",     fonte_media, CIANO, GRID_P_X + BOARD_W // 2, GRID_Y - PAD_CIMA - 24)
         escrever(surf, f"Restantes: {len(avioes_jogador)}", fonte_mini, CINZA, GRID_P_X + BOARD_W // 2, GRID_Y + BOARD_H + 14)
-        escrever(surf, "AVIOES INIMIGOS", fonte_media, CIANO, GRID_E_X + BOARD_W // 2, GRID_Y - PAD_CIMA - 24)
+        escrever(surf, "AVIÕES INIMIGOS", fonte_media, CIANO, GRID_E_X + BOARD_W // 2, GRID_Y - PAD_CIMA - 24)
         escrever(surf, f"Restantes: {len(avioes_cpu)}",    fonte_mini, CINZA, GRID_E_X + BOARD_W // 2, GRID_Y + BOARD_H + 14)
         escrever(surf, f"Rodada {rodada}", fonte_mini,    CINZA,   LARGURA // 2, ALTURA - 44)
         escrever(surf, mensagem,           fonte_pequena, cor_msg, LARGURA // 2, ALTURA - 26)
@@ -439,7 +439,7 @@ def modo4(hack=False, som_explosao=None, som_splash=None):
         pygame.init()
 
     surf  = pygame.display.set_mode((LARGURA, ALTURA))
-    pygame.display.set_caption("Batalha Aerea")
+    pygame.display.set_caption("Batalha Aérea")
     clock = pygame.time.Clock()
     carregar_fontes()
 
@@ -456,7 +456,7 @@ def modo4(hack=False, som_explosao=None, som_splash=None):
     avioes_cpu     = gerar_avioes_cpu(3)
 
     rodada  = 1
-    msg     = "Sua vez — clique no tabuleiro inimigo para atirar."
+    msg     = "Sua vez. Clique no tabuleiro inimigo para atirar."
     cor_msg = BRANCO
 
     while avioes_jogador and avioes_cpu:
@@ -485,7 +485,7 @@ def modo4(hack=False, som_explosao=None, som_splash=None):
                         cor_msg = EXPLOSAO
                     else:
                         anim_agua(surf, clock, GRID_E_X, GRID_Y, lin, col, redesenhar, som_splash)
-                        msg     = "Tiro no vazio — o inimigo se moveu!"
+                        msg     = "Tiro no vazio. O inimigo se moveu!"
                         cor_msg = AGUA
                     aguardando_clique = False
 
@@ -523,7 +523,7 @@ def modo4(hack=False, som_explosao=None, som_splash=None):
         mover_avioes(avioes_jogador)
 
         rodada += 1
-        msg     = "Sua vez — clique no tabuleiro inimigo para atirar."
+        msg     = "Sua vez. Clique no tabuleiro inimigo para atirar."
         cor_msg = BRANCO
 
     if not avioes_cpu and avioes_jogador:
