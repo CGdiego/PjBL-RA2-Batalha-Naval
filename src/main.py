@@ -355,7 +355,7 @@ def modo1():
         limpar()
 
         id_atingido = real_cpu[linha][coluna]
-        if id_atingido != "⬛":
+        if id_atingido not in ["⬛", "💧", "💥"]:
             animacao_explosao(2)
             real_cpu[linha][coluna] = "💥"
             vis_cpu[linha][coluna]  = "💥"
@@ -408,7 +408,7 @@ def modo1():
         time.sleep(3)
  
         id_atingido = real_jogador[linha][coluna]
-        if id_atingido != "⬛":
+        if id_atingido not in ["⬛", "💧", "💥"]:
             animacao_explosao(2)
             real_jogador[linha][coluna] = "💥"
             vis_jogador[linha][coluna]  = "💥"
