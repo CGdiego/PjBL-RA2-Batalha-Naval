@@ -1,3 +1,1 @@
-- Modo com aviões ao invés de barcos, então se mexem ao invés de ficarem parados. Feito em pygame;
-- Fazer o modo desafio com os 5 tipos diferentes de barcos;
-- Atualizar o readme.
+- Tudo feito!
